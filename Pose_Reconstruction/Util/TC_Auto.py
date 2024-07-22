@@ -120,6 +120,78 @@ def bayesian_search(input_shape, param_space, x_train_masked, x_train, x_val_mas
 
     res = gp_minimize(objective, param_space, n_calls=n_calls, random_state=0)
     return res
+def trainmodel(traindatapath, feature_means_path, model_save_path, v73, model_params):
+    try:
+        # Load data
+        if v73:
+            x_train = load_v73_mat_file(traindatapath, var_name='train_dataX')
+            y_train = load_v73_mat_file(traindatapath, var_name='train_dataY')
+            x_test = load_v73_mat_file(traindatapath, var_name='test_dataX')
+            y_test = load_v73_mat_file(traindatapath, var_name='test_dataY')
+        else:
+            data = loadmat(traindatapath)
+            x_train, y_train = data['train_dataX'], data['train_dataY']
+            x_test, y_test = data['test_dataX'], data['test_dataY']
+
+        print(f"Data loaded. Shapes: x_train: {x_train.shape}, y_train: {y_train.shape}")
+
+        # Load feature means and create masked data
+        feature_means = load_feature_means(feature_means_path)
+        x_train_masked = create_masked_data(x_train, feature_means)
+
+        # Prepare validation data
+        validation_split = float(model_params['val_split'])  # Ensure this is a float
+        val_size = int(len(x_train) * validation_split)
+        x_val, y_val = x_train[:val_size], y_train[:val_size]
+        x_val_masked = x_train_masked[:val_size]
+        x_train, y_train = x_train[val_size:], y_train[val_size:]
+        x_train_masked = x_train_masked[val_size:]
+
+        print(f"Data prepared. Shapes: x_train_masked: {x_train_masked.shape}, x_val_masked: {x_val_masked.shape}")
+
+        # Ensure input_shape is a tuple of integers
+        input_shape = tuple(map(int, model_params['input_shape']))
+
+        print(f"Creating Autoencoder with input_shape: {input_shape}")
+
+        # Create and train the autoencoder
+        autoenc = Autoencoder(
+            input_shape=input_shape,
+            bottleneck_size=int(model_params['bottleneck_size']),
+            activation=model_params['activation'],
+            conv_units=int(model_params['conv_units']),
+            kernel_size=int(model_params['kernel_size']),
+            stride_size=int(model_params['stride_size']),
+            batch_size=int(model_params['batch_size']),
+            dropout_rate=float(model_params['dropout_rate'])
+        )
+
+        print("Autoencoder created. Starting training...")
+
+        history = autoenc.train(
+            x_train_masked, y_train, 
+            x_val_masked, y_val, 
+            epochs=int(model_params['epochs']),
+            ER_Patience=int(model_params['ER_Patience']),
+            LR_patience=int(model_params['LR_patience'])
+        )
+
+        print("Training completed. Evaluating model...")
+
+        # Evaluate and save the model
+        test_loss = autoenc.evaluate(x_test, y_test)
+        print(f'Test loss: {test_loss}')
+        autoenc.save_model(model_save_path)
+
+        return test_loss
+
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        return None
+
+
 
 if __name__ == "__main__":
 

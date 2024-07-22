@@ -1,14 +1,40 @@
 function params = setparams()
+    % Set up basic parameters
+    params.autoenc.reference_frame_path = 'Data/reference_frame';
+    params.autoenc.features_means_path = 'Data/features_means';
+    params.sleaplabelspath = 'Data/Labels';
+    params.sleappredspath = 'Data/Preds';
+    params.autoenc.model = 'TCONV';
 
-params.autoenc.module = py.importlib.import_module('TC_Auto');
-params.autoenc.model = 'TCONV'; %Can also be MLP
-if strcmpi(params.autoenc.model, 'TCONV')
-    params.autoenc.path = 'Models/conv_autoencoder_model.h5';
-    params.autoenc.sequence_length = 15;
-elseif strcmpi(params.autoenc.model, 'MLP')
-    params.autoenc.path = 'Models/autoencoder_model.h5';
-    params.autoenc.sequence_length = nan;
-else 
-    error('Need to pick either TCONV or MLP for the autoencoder model. TCONV = temporal convolution, MLP = regular symmetric autoencoder')
+    % Set up model parameters to match Python Autoencoder class
+    params.autoenc.model_params = struct(...
+        'sequence_length', 15, ...
+        'input_shape', [15, 44], ... % Ensure these are integers
+        'bottleneck_size', int32(22), ...
+        'activation', 'selu', ...
+        'conv_units', int32(256), ...
+        'kernel_size', int32(3), ...
+        'stride_size', int32(1), ...
+        'batch_size', int32(512), ...
+        'dropout_rate', 0.1, ... 
+        'val_split', 0.2, ... 
+        'epochs', int32(100), ...
+        'ER_Patience', int32(25), ...
+        'LR_patience', int32(10) ...
+    );
+
+    % Set model path based on model type
+    if strcmpi(params.autoenc.model, 'TCONV')
+        params.autoenc.path = 'Models/conv_autoencoder_model.h5';
+    elseif strcmpi(params.autoenc.model, 'MLP')
+        params.autoenc.path = 'Models/autoencoder_model.h5';
+        % Adjust parameters for MLP if needed
+        params.autoenc.model_params.input_shape = [1, 360]; % Ensure these are integers
+    else
+        error('Need to pick either TCONV or MLP for the autoencoder model.');
+    end
+
+  
+
 end
 
