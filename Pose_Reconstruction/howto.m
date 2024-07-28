@@ -19,3 +19,6 @@ addpath(genpath(pwd));
 params = setparams(default_model_params); 
 disp(params.autoenc.model_params)
 
+project = Project('testDir', 'testDir', params); %this creates a project object which holds the data directory and the parameters and loads the python module
+disp(project.dataDir)
+
