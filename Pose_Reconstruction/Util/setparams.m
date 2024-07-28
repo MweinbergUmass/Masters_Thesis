@@ -1,6 +1,6 @@
 function params = setparams()
     % Set up basic parameters
-    params.autoenc.reference_frame_path = 'Data/reference_frame';
+    params.autoenc.reference_frame_path = ['Data'/'reference_frame']; %% Lets add filesep here
     params.autoenc.features_means_path = 'Data/features_means';
     params.sleaplabelspath = 'Data/Labels';
     params.sleappredspath = 'Data/Preds';
