@@ -1,3 +1,7 @@
+%% This will be a walkthrough of how to use the project class and perform pose reconstruction using a temporal convolutional autoencoder.
+% First, add all the sleap h5's to the data directory. One folder for preds and one for labels.
+% Then, run the following code to prepare the training data and train the model.
+
 %Lets add all subfolders to the path first
 addpath(genpath(pwd));
 % set params
@@ -21,4 +25,18 @@ disp(params.autoenc.model_params)
 
 project = Project('testDir', 'testDir', params); %this creates a project object which holds the data directory and the parameters and loads the python module
 disp(project.dataDir)
+
+project.prepareTrainingData('Data/'); %this prepares the training data, essentially it just loads the data from the directory (Data/) and stores it in the project object
+displayProjectSummary(project); %this will display the project summary
+preproc_data_T_Conv_Training_W_Labels(project) %this is a helper function which preporcesses the data for training the autoencoder and stores it in the project object in the directory given by project.dataDir
+% Train the model
+if getenv('VSCODE_PID')
+    disp('Running in Visual Studio Code');
+else
+    project.trainAuto(); %this trains the model and stores it in the project object in the directory given by project.modelsDir 
+    %for some reason this doesn't work if it is called in vscode, but it works in matlab
+    disp('Running in MATLAB');
+end
+project.listModels(); %this will list the models in the project object
+
 
