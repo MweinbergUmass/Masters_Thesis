@@ -377,7 +377,7 @@ classdef Project < handle
                         exist(obj.parameters.autoenc.modelPath, 'file') == 2;
         end
     end
-    %% TODO: Need to implement Reconstruction next
+    %% TODO: Need to implement Reconstruction next, Done
     methods(Static)
         function checkPythonEnv()
             % Check if pyenv is already configured
