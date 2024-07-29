@@ -1,33 +1,22 @@
 function [features, angles, distances, MinMaxData] = graballfeats(project)
     proc_mice__pos_file_list = project.returnDefaultReconstructionFiles;
-    [mp4_files] =  grabMatchingMP4Files(folder, proc_mice__pos_file_list);
-    file_lists.proc_mice__pos = proc_mice__pos_file_list;
-    file_lists.mp4_files = mp4_files;
-    onehot = returnOneHot(proc_mice__pos_file_list);
 
-
-           
-    
     all_features = cell(1,length(proc_mice__pos_file_list));
     bookeeper = cell(1,length(proc_mice__pos_file_list));
-    onehotexp = cell(1,length(proc_mice__pos_file_list));
     feature_lengths = zeros(1,length(proc_mice__pos_file_list));
+    
     for i = 1:length(proc_mice__pos_file_list)
     fprintf('Appending Features for File %d: %s\n',i, proc_mice__pos_file_list{1,i});
     load(proc_mice__pos_file_list{1,i})
-    if ~strcmp(fieldnames(proc_mice_pos_data.ri), 'posdata_reconstructed')
-        file_lists.mp4_files{i} = nan;
-        continue
-    end
-    [angle_features, distance_features] = ComputeFeatures(proc_mice_pos_data);
+    [angle_features, distance_features] = ComputeFeatures(proc_mice_pos_data,project);
     temp_features = [angle_features.values', distance_features.values'];
     all_features{i} = temp_features;
     bookeeper{i} = i .* ones(size(temp_features,1),1);
     feature_lengths(i) = length(temp_features);
-    onehotexp{i} = repmat(onehot(i,:), length(temp_features), 1);
     if saveraw
     proc_mice_pos_data.features.raw.btween = temp_features;
     save(proc_mice__pos_file_list{1,i},"proc_mice_pos_data");
+    pro
     end 
     end
     features_info.angle_features = rmfield(angle_features,"values");

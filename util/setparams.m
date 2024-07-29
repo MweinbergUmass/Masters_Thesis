@@ -47,6 +47,13 @@ function params = setparams(varargin)
     else
         error('Need to pick either TCONV or MLP for the autoencoder model.');
     end
+
+
+    %% Params for Feature Extraction
+    % Should just be paths to xlsx file for adjusting
+    params.features.angles_xlsx_path = 'Data/Features_XLSX/angle_features.xlsx';
+    params.features.distances_xlsx_Path = 'Data/Features_XLSX/distance_features.xlsx';
+
 end
 
 function overriddenParams = overrideParams(defaultParams, userParams)

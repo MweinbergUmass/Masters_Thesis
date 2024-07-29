@@ -329,7 +329,6 @@ classdef Project < handle
             end
         end
     end
-    % lets add the functionality to return a list of all the processed files which have only been processed with some method of reconstroction
     function [processedFiles] = returnDefaultReconstructionFiles(obj, reconsmethod)
         %% This returns a cell array of all the files that have been processed with the default reconstruction method
         if nargin < 2
@@ -342,6 +341,7 @@ classdef Project < handle
             processedFiles{end+1} = obj.fileRegistry(i).processed.(reconsmethod); 
         end
     end
+    % TODO: lets add the functionality to return the mp4 files that match the processed files
     
 
         function listModels(obj)
