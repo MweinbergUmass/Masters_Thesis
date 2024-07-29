@@ -353,6 +353,27 @@ classdef Project < handle
             obj.log{end+1} = sprintf('%s: Set current model to: %s', datetime('now'), modelName);
             obj.saveProject();
         end
+
+        function [isPrepared, isTrained] = checkProcess(obj)
+            % Check if data preparation has been done
+            isPrepared.files = isfield(obj.parameters, 'selected_files_preds') && ...
+                         isfield(obj.parameters, 'selected_files_labels') && ...
+                         ~isempty(obj.parameters.selected_files_preds) && ...
+                         ~isempty(obj.parameters.selected_files_labels);
+            
+            if isfield(obj.parameters.autoenc, 'traintestdataready') && ...
+                isfield(obj.parameters.autoenc, 'trainingsetpath')
+                isPrepared.traintest = obj.parameters.autoenc.traintestdataready;
+            else
+                isPrepared.traintest = false;
+            end
+             
+            
+            % Check if a model has been trained
+            isTrained = isfield(obj.parameters, 'autoenc') && ...
+                        isfield(obj.parameters.autoenc, 'modelPath') && ...
+                        exist(obj.parameters.autoenc.modelPath, 'file') == 2;
+        end
     end
     %% TODO: Need to implement Reconstruction next
     methods(Static)

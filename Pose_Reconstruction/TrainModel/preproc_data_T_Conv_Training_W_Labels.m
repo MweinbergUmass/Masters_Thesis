@@ -134,6 +134,7 @@ function preproc_data_T_Conv_Training_W_Labels(project)
         project.parameters.autoenc.v73 = 0;
     end
     project.log{end+1} = sprintf('Saved processed data to %s', outputFile);
+    project.parameters.autoenc.traintestdataready = true;
     project.saveProject
 end
  
