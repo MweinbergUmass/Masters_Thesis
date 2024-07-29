@@ -1,7 +1,6 @@
 %% This will be a walkthrough of how to use the project class and perform pose reconstruction using a temporal convolutional autoencoder.
 % First, add all the sleap h5's to the data directory. One folder for preds and one for labels.
 % Then, run the following code to prepare the training data and train the model.
-
 %Lets add all subfolders to the path first
 addpath(genpath('Pose_Reconstruction'));
 addpath("util/")
@@ -61,6 +60,21 @@ if ~isempty(existingProcessedFile)
 else 
     [proc_mice_pos_data] = reconstruct_sleap_preds(sleaph5path, project); %this will reconstruct the data using the trained model and store it in the project object in the directory given by project.processedDir
 end
+
+
+%%
+sleaph5path2 = 'TestData/main_newcam_proj_real_newcopy.105_WIN_20240607_14_34_33_Pro_output_converted.analysis.h5';
+existingProcessedFile = project.getProcessedFile(sleaph5path2);
+if ~isempty(existingProcessedFile)
+    disp(['File already processed. Loading: ' existingProcessedFile]);
+    load(existingProcessedFile, 'processedData');
+    proc_mice_pos_data2 = processedData;
+else 
+    [proc_mice_pos_data2] = reconstruct_sleap_preds(sleaph5path2, project); %this will reconstruct the data using the trained model and store it in the project object in the directory given by project.processedDir
+end
+
+
+
 
 %% Okay the structure of the proc_mice_pos_data is as follows:
 % proc_mice_pos_data.ri.posdata_reconstructed is the reconstructed data for the resident mouse
