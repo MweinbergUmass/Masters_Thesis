@@ -3,10 +3,13 @@ function [sequences_fp,sequences_ri,proc_mice_pos_data,sequence_length]= preproc
         sequence_length = 15;
     end 
     if nargin < 3
-        load('Data/features_means.mat', 'features_means');
+        load(strcat('Data', filesep, 'Static_AutoData', filesep, 'features_means'),'features_means');
+    end 
+    if nargin < 4
+        load(strcat('Data', filesep, 'Static_AutoData', filesep, 'reference_frame'),'reference_frame');
     end 
         
-    load('Data/reference_frame.mat', 'reference_frame');
+    
     
     mice_pos_data = Sleapdataproc(sleaph5path);
     proc_mice_pos_data.node_names = mice_pos_data.node_names;
