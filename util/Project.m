@@ -401,7 +401,7 @@ classdef Project < handle
                 loaded = load(projectFile);
                 obj = loaded.obj;
                 disp(['Loaded project: ' obj.name]);
-                obj.loadModule();
+                obj.loadModule_PR();
             else
                 error('Project file does not exist.');
             end
