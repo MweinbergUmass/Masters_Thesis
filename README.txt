@@ -13,6 +13,37 @@ Currently working is:
 Next steps are:
 -Feature Extraction (Somehow couple this with an excel sheet?)
 	-Parameter changes (filtering, etc...)
+
+**
+Currently working on this. It should work by having some modular function which just computes features.
+-Train Embedding
+	-Compute features for all datasets
+	-Persistent variable for tracking minmaxdata
+(I'm imagining a func which looks something like train_embedding(project), which computes all the nescessary features)
+train_embedding(project)
+	-Compute all features
+		-Find all proc_mice file, load it, for each:
+			-compute features
+			-update minmaxdata
+			-update length cell array which is somehow coupled to the proc_mice_file (maybe use file registry for this?)
+			-save the data
+		-Training subsampling procedure such that I grab only certain subsets of files
+		-Normalize using minmaxdata
+		-Compute Distance Matrix
+		-Run tsne
+		-Train Test Split
+		-Train MLP to reembed
+	mkdir in data folder for the project called Embeddingdata
+	Embeddingdata
+		-minmaxdata
+		-MLP
+		-Distance Matrix
+		-Train Test Split
+		-Features for Distance Matrix
+return 0
+
+**
+
 -Embedding (Decision between autoencoder, tsne, or umap would be nice, for now we can just go with tsne)
 -Pick a reembeding method (everything will be defaulted to what I used for my masters thesis)
 -Embed all sleap files and make movies
