@@ -32,6 +32,7 @@ function preproc_data_T_Conv_Training_W_Labels(project)
         ri_pred_cell_labels{i} = temp_ri_stru_labels.posdata_centered_qc;
         fp_pred_cell{i} = temp_fp_stru_preds.posdata_centered_qc;
         fp_pred_cell_labels{i} = temp_fp_stru_labels.posdata_centered_qc;
+        
     end
     diff_lengths_ri = cellfun(@length,ri_pred_cell) - cellfun(@length,ri_pred_cell_labels);
     for i = 1:length(ri_pred_cell)

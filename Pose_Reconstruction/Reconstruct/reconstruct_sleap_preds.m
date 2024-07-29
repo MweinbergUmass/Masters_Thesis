@@ -51,7 +51,11 @@ function [proc_mice_pos_data] = reconstruct_sleap_preds(sleaph5path, project, pr
 
     % Add processed file to project and save
     processedFilePath = project.addProcessedFile(sleaph5path, proc_mice_pos_data, processingType);
+    project.updateProcessingStatus(sleaph5path, 'sleap_extracted', 1)
+    project.updateProcessingStatus(sleaph5path, 'autoencoder_completed', 1)
     
+
+
     % Update proc_mice_pos_data with the new file path
     proc_mice_pos_data.filepath = processedFilePath;
     project.saveProject()

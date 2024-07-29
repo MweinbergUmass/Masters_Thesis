@@ -22,7 +22,7 @@ classdef Project < handle
                 obj.creationDate = datetime('now');
                 obj.baseDir = baseDir;
                 obj.dataDir = fullfile(baseDir, 'data');
-                obj.fileRegistry = struct('original', {}, 'processed', {});
+                obj.fileRegistry = struct('original', {}, 'processed', {}, 'status', {});
                 obj.log = {};
                 obj.filePatterns = struct(...
                 'preds', '*.analysis.h5', ...
@@ -109,20 +109,60 @@ classdef Project < handle
             
             if isempty(originalFileIndex)
                 % If not, add a new entry
-                newEntry = struct('original', originalFilePath, 'processed', struct());
-                newEntry.processed.(processingType) = processedFilePath;
-                obj.fileRegistry(end+1) = newEntry;
+                newEntry = struct(...
+                    'original', originalFilePath, ...
+                    'processed', struct(processingType, processedFilePath), ...
+                    'status', struct(...
+                        'autoencoder_completed', false, ...
+                        'sleap_extracted', false, ...
+                        'features_extracted', false ...
+                    ) ...
+                );
+                
+                if isempty(obj.fileRegistry)
+                    obj.fileRegistry = newEntry;
+                else
+                    obj.fileRegistry(end+1) = newEntry;
+                end
             else
                 % If yes, add or update the processed file for this processing type
                 obj.fileRegistry(originalFileIndex).processed.(processingType) = processedFilePath;
             end
-            
             % Add log entry
             logEntry = sprintf('Processed file: %s -> %s (Type: %s)', originalFilePath, processedFilePath, processingType);
             obj.log{end+1} = sprintf('%s: %s', char(datetime('now')), logEntry);
             
             % Save updated project
             obj.saveProject();
+        end
+        function updateProcessingStatus(obj, originalFilePath, statusType, value)
+            % Update the processing status for a specific file
+            originalFileIndex = find(strcmp({obj.fileRegistry.original}, originalFilePath), 1);
+            
+            if ~isempty(originalFileIndex)
+                obj.fileRegistry(originalFileIndex).status.(statusType) = value;
+                
+                % Add log entry
+                logEntry = sprintf('Updated status for file: %s, %s = %d', originalFilePath, statusType, value);
+                obj.log{end+1} = sprintf('%s: %s', char(datetime('now')), logEntry);
+                
+                % Save updated project
+                obj.saveProject();
+            else
+                warning('File not found in registry: %s', originalFilePath);
+            end
+        end
+        
+        function status = getProcessingStatus(obj, originalFilePath)
+            % Get the processing status for a specific file
+            originalFileIndex = find(strcmp({obj.fileRegistry.original}, originalFilePath), 1);
+            
+            if ~isempty(originalFileIndex)
+                status = obj.fileRegistry(originalFileIndex).status;
+            else
+                status = [];
+                warning('File not found in registry: %s', originalFilePath);
+            end
         end
         
         function processedFilePath = getProcessedFile(obj, originalFilePath, processingType)
@@ -341,7 +381,6 @@ classdef Project < handle
             processedFiles{end+1} = obj.fileRegistry(i).processed.(reconsmethod); 
         end
     end
-    % TODO: lets add the functionality to return the mp4 files that match the processed files
     
 
         function listModels(obj)
