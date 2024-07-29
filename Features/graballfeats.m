@@ -1,4 +1,5 @@
 function [features, angles, distances, MinMaxData] = graballfeats(project)
+    
     proc_mice__pos_file_list = project.returnDefaultReconstructionFiles;
 
     all_features = cell(1,length(proc_mice__pos_file_list));
@@ -13,11 +14,6 @@ function [features, angles, distances, MinMaxData] = graballfeats(project)
     all_features{i} = temp_features;
     bookeeper{i} = i .* ones(size(temp_features,1),1);
     feature_lengths(i) = length(temp_features);
-    if saveraw
-    proc_mice_pos_data.features.raw.btween = temp_features;
-    save(proc_mice__pos_file_list{1,i},"proc_mice_pos_data");
-    pro
-    end 
     end
     features_info.angle_features = rmfield(angle_features,"values");
     features_info.distance_features = rmfield(distance_features, "values"); 
