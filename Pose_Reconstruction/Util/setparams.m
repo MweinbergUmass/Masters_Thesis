@@ -5,8 +5,8 @@ function params = setparams(varargin)
     % Outputs: struct with all parameters needed for the autoencoder model 
     %%
     % Set up basic parameters
-    params.autoenc.reference_frame_path = 'Data/reference_frame'; %% Lets add filesep here
-    params.autoenc.features_means_path = 'Data/features_means';
+    params.autoenc.reference_frame_path = 'Data/Static_AutoData/reference_frame'; %% Lets add filesep here
+    params.autoenc.features_means_path = 'Data/Static_AutoData/features_means';
     params.sleaplabelspath = 'Data/Labels';
     params.sleappredspath = 'Data/Preds';
     params.autoenc.model = 'TCONV';

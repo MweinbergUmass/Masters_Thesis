@@ -3,9 +3,10 @@
 % Then, run the following code to prepare the training data and train the model.
 
 %Lets add all subfolders to the path first
-addpath(genpath(pwd));
-% first lets make sure python is configured correctly
+addpath(genpath('Pose_Reconstruction'));
+addpath("util/")
 setuppyenv();
+%%
 % set params
  default_model_params = struct(... 
     'sequence_length', 15, ...
@@ -33,7 +34,7 @@ end
 
 [isPrepared, isTrained] = project.checkProcess(); %this checks if the data is prepared and the model is trained
 if ~isPrepared.files
-    project.prepareTrainingData('Data/'); %this prepares the training data, essentially it just loads the data from the directory (Data/) and stores it in the project object
+    project.prepareTrainingData_PR('Data/'); %this prepares the training data, essentially it just loads the data from the directory (Data/) and stores it in the project object
 else
     disp('Data is already prepared');
 end

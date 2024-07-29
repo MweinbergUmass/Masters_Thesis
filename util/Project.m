@@ -28,7 +28,7 @@ classdef Project < handle
                 'preds', '*.analysis.h5', ...
                 'labels', '*.analysis.h5' ...
                 );
-                obj.loadModule();
+                obj.loadModule_PR();
                 
                 % Create project and data directories if they don't exist
                 if ~exist(obj.baseDir, 'dir')
@@ -59,12 +59,11 @@ classdef Project < handle
                 error('Project constructor requires either 0, 2, or 3 arguments');
             end
         end
-        function loadModule(obj)
+        function loadModule_PR(obj)
             % Get the current directory
-            currentDir = pwd;
             
             % Construct the path to the Util directory
-            utilDir = fullfile(currentDir, 'Util');
+            utilDir = fullfile(pwd, 'Pose_Reconstruction/Util');
             
             % Add the Util directory to Python's sys.path
             if count(py.sys.path, utilDir) == 0
@@ -203,7 +202,7 @@ classdef Project < handle
         end
     end
             
-     function prepareTrainingData(obj, mainDataDir)
+     function prepareTrainingData_PR(obj, mainDataDir)
             % Set up training data directory
             obj.trainDataDir = mainDataDir;
             obj.parameters.sleappredspath = fullfile(mainDataDir, 'Preds');
