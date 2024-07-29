@@ -96,4 +96,9 @@ subplot(1,2,2)
 plot(proc_mice_pos_data.fp.posdata_reconstructed(1,:), proc_mice_pos_data.fp.posdata_reconstructed(1+22,:), 'b.')
 title('Reconstructed Data')
 
-%
+%% Lets plot nan's before and after the reconstruction
+nans_before = sum(isnan(proc_mice_pos_data.fp.orig(:)));
+nans_after = sum(isnan(proc_mice_pos_data.fp.posdata_reconstructed(:)));
+disp(['Number of NaNs before reconstruction: ' num2str(nans_before)])
+disp(['Number of NaNs after reconstruction: ' num2str(nans_after)]) %this should be close to zero but it might not be due to the quality control
+
