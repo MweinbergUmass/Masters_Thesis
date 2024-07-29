@@ -5,10 +5,10 @@ function params = setparams(varargin)
     % Outputs: struct with all parameters needed for the autoencoder model 
     %%
     % Set up basic parameters
-    params.autoenc.reference_frame_path = 'Data/Static_AutoData/reference_frame'; %% Lets add filesep here
-    params.autoenc.features_means_path = 'Data/Static_AutoData/features_means';
-    params.sleaplabelspath = 'Data/Labels';
-    params.sleappredspath = 'Data/Preds';
+    params.autoenc.reference_frame_path = strcat('Data', filesep, 'Static_AutoData', filesep, 'reference_frame');
+    params.autoenc.features_means_path = strcat('Data', filesep, 'Static_AutoData', filesep, 'features_means');
+    params.sleaplabelspath = strcat('Data', filesep, 'Labels');
+    params.sleappredspath = strcat('Data', filesep, 'Preds');
     params.autoenc.model = 'TCONV';
 
     % Set up default model parameters to match Python Autoencoder class
@@ -39,9 +39,9 @@ function params = setparams(varargin)
 
     % Set model path based on model type
     if strcmpi(params.autoenc.model, 'TCONV')
-        params.autoenc.path = 'Models/conv_autoencoder_model.h5';
+        params.autoenc.path = strcat('Models', filesep, 'conv_autoencoder_model.h5');
     elseif strcmpi(params.autoenc.model, 'MLP')
-        params.autoenc.path = 'Models/autoencoder_model.h5';
+        params.autoenc.path = strcat('Models', filesep, 'autoencoder_model.h5');
         % Adjust parameters for MLP if needed
         params.autoenc.model_params.input_shape = [1, 360]; % Ensure these are integers
     else
