@@ -12,6 +12,7 @@ function params = setparams(varargin)
     params.autoenc.model = 'TCONV';
 
     % Set up default model parameters to match Python Autoencoder class
+
     default_model_params = struct(... 
         'sequence_length', 15, ...
         'input_shape', [15, 44], ... % Ensure these are integers
@@ -51,8 +52,8 @@ function params = setparams(varargin)
 
     %% Params for Feature Extraction
     % Should just be paths to xlsx file for adjusting
-    params.features.angles_xlsx_path = 'Data/Features_XLSX/angle_features.xlsx';
-    params.features.distances_xlsx_Path = 'Data/Features_XLSX/distance_features.xlsx';
+    params.features.angles_xlsx_path = strcat('Data', filesep, 'Features_XLSX', filesep, 'angle_features.xlsx');
+    params.features.distances_xlsx_Path = strcat('Data', filesep, 'Features_XLSX', filesep, 'distance_features.xlsx');
 
 end
 
