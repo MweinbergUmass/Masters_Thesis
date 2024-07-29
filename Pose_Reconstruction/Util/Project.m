@@ -52,7 +52,6 @@ classdef Project < handle
                 % Save parameters
                 obj.parameterFile = fullfile(obj.baseDir, 'project_params.mat');
                 save(obj.parameterFile, 'params');
-                
                 % Save initial project file
                 obj.saveProject();
                 disp(['Created new project: ' projectName]);
@@ -380,6 +379,23 @@ classdef Project < handle
     end
     %% TODO: Need to implement Reconstruction next
     methods(Static)
+        function checkPythonEnv()
+            % Check if pyenv is already configured
+            try
+                current_pyenv = pyenv;
+                disp('Current Python environment:');
+                disp(current_pyenv);
+            catch
+                error('pyenv is not configured. Please set up your Python environment first.');
+            end
+
+            % Verify that the correct Python is being used
+            disp(['Using Python version: ', char(py.sys.version)]);
+
+            % Check if required packages are installed
+            checkRequiredPackages(current_pyenv.Executable);
+        end
+
         function obj = loadProject(projectFile)
             % Load an existing project
             if exist(projectFile, 'file')

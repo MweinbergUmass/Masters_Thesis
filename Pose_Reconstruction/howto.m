@@ -4,6 +4,8 @@
 
 %Lets add all subfolders to the path first
 addpath(genpath(pwd));
+% first lets make sure python is configured correctly
+setuppyenv();
 % set params
  default_model_params = struct(... 
     'sequence_length', 15, ...
@@ -22,7 +24,7 @@ addpath(genpath(pwd));
 );
 params = setparams(default_model_params); 
 disp(params.autoenc.model_params)
-%% We should add functionality in the constructor method to check if the project is already created and if so, load it
+%% checking if stuff exists and if not, running it.
 if ~exist('testDir', 'dir')
     project = Project('testDir', 'testDir', params); %this creates a project object which holds the data directory and the parameters and loads the python module
 else
@@ -96,7 +98,7 @@ subplot(1,2,2)
 plot(proc_mice_pos_data.fp.posdata_reconstructed(1,:), proc_mice_pos_data.fp.posdata_reconstructed(1+22,:), 'b.')
 title('Reconstructed Data')
 
-%% Lets plot nan's before and after the reconstruction
+%% Lets display nan's before and after the reconstruction
 nans_before = sum(isnan(proc_mice_pos_data.fp.orig(:)));
 nans_after = sum(isnan(proc_mice_pos_data.fp.posdata_reconstructed(:)));
 disp(['Number of NaNs before reconstruction: ' num2str(nans_before)])
