@@ -329,6 +329,19 @@ classdef Project < handle
             end
         end
     end
+    % lets add the functionality to return a list of all the processed files which have only been processed with some method of reconstroction
+    function [processedFiles] = returnDefaultReconstructionFiles(obj, reconsmethod)
+        %% This returns a cell array of all the files that have been processed with the default reconstruction method
+        if nargin < 2
+            reconsmethod = 'default_reconstruction';
+        end
+        % Initialize an empty cell array to store the file paths
+        processedFiles = {};
+        % Loop through each struct and add the default_reconstruction path to the list
+        for i = 1:numel(obj.fileRegistry)
+            processedFiles{end+1} = obj.fileRegistry(i).processed.(reconsmethod); 
+        end
+    end
     
 
         function listModels(obj)
@@ -375,6 +388,7 @@ classdef Project < handle
                         isfield(obj.parameters.autoenc, 'modelPath') && ...
                         exist(obj.parameters.autoenc.modelPath, 'file') == 2;
         end
+         
     end
     %% TODO: Need to implement Reconstruction next, Done
     methods(Static)

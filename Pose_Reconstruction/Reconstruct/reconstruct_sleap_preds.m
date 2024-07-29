@@ -54,4 +54,5 @@ function [proc_mice_pos_data] = reconstruct_sleap_preds(sleaph5path, project, pr
     
     % Update proc_mice_pos_data with the new file path
     proc_mice_pos_data.filepath = processedFilePath;
+    project.saveProject()
 end
