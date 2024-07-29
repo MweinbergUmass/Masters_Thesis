@@ -48,4 +48,52 @@ end
 
 project.listModels(); %this will list the models in the project object
 
+%% Now we will do the reconstruction
+sleaph5path = 'TestData/main_newcam_proj_real_newcopy.107_WIN_20240607_15_51_02_Pro_output_converted.analysis.h5';
+existingProcessedFile = project.getProcessedFile(sleaph5path);
+if ~isempty(existingProcessedFile)
+    disp(['File already processed. Loading: ' existingProcessedFile]);
+    load(existingProcessedFile, 'processedData');
+    proc_mice_pos_data = processedData;
+else 
+    [proc_mice_pos_data] = reconstruct_sleap_preds(sleaph5path, project); %this will reconstruct the data using the trained model and store it in the project object in the directory given by project.processedDir
+end
 
+%% Okay the structure of the proc_mice_pos_data is as follows:
+% proc_mice_pos_data.ri.posdata_reconstructed is the reconstructed data for the resident mouse
+% proc_mice_pos_data.fp.posdata_reconstructed is the reconstructed data for the fiber mouse
+
+% This is what we will be working with. Lets take a look at the data structure
+disp(proc_mice_pos_data)
+
+%% here's what each field in the init struct means
+% node_names: [22x1 string] %these are the names of the nodes in the sleap file 
+% sleappath: 'TestData/main_newcam_proj_real_newcopy.107_WIN_20240607_15_51_02_Pro_output_converted.analysis.h5' %this is the path to the sleap file
+%        ri: [1x1 struct]  %this is the resident mouse data
+%        fp: [1x1 struct]   %this is the fiber mouse data
+% sequence_length: 15 %this is the sequence length used for training the model
+
+
+disp(proc_mice_pos_data.fp)
+%% here's what each field in the secondary fp (symmetric to ri) struct means
+% refdata: [2x22 double] %this is the reference data for the fiber mouse used in the reconstruction
+% number_of_pts_found: [22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 ... ] (1x26755 double) %this is the number of points found in each frame
+%        scale_factor: 0.0063 %this is the scale factor used in the reconstruction
+%            centroid: [1x1 struct] %this is the centroid of the fiber mouse it contains the reference and frame centroids and the frame rotation
+%      frame_rotation: [0.5486 0.8844 0.5697 0.5479 0.9234 0.7172 0.5658 0.8565 0.6458 0.1513 0.3968 0.3842 0.3454 0.8327 0.5712 ... ] (1x26755 double) %this is the frame rotation used in the reconstruction
+%    posdata_centered: [44x26755 double] %this is the centered data used in the reconstruction
+% posdata_centered_qc: [44x26755 double] %this is the centered data used in the reconstruction after quality control essentially the same as posdata_centered but with NaNs removed and with data further than N standard deviations from the mean removed
+%                orig: [44x26755 double] %this is the original data
+%   reconstructedData: [26740x44 double] %this is the reconstructed data in the ego center reference frame
+% posdata_reconstructed: [44x26740 double] %this is the reconstructed data after inverting the ego center
+
+%% lets plot the data before and after reconstruction
+figure
+subplot(1,2,1)
+plot(proc_mice_pos_data.fp.orig(1,:), proc_mice_pos_data.fp.orig(1+22,:), 'r.') %this plots the nose of the fiber mouse x and y
+title('Original Data')
+subplot(1,2,2)
+plot(proc_mice_pos_data.fp.posdata_reconstructed(1,:), proc_mice_pos_data.fp.posdata_reconstructed(1+22,:), 'b.')
+title('Reconstructed Data')
+
+%

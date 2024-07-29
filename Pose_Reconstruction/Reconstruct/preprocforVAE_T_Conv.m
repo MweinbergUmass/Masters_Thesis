@@ -6,7 +6,7 @@ function [sequences_fp,sequences_ri,proc_mice_pos_data,sequence_length]= preproc
         load('Data/features_means.mat', 'features_means');
     end 
         
-    load('Data/reference_frame_V2.mat', 'reference_frame');
+    load('Data/reference_frame.mat', 'reference_frame');
     
     mice_pos_data = Sleapdataproc(sleaph5path);
     proc_mice_pos_data.node_names = mice_pos_data.node_names;

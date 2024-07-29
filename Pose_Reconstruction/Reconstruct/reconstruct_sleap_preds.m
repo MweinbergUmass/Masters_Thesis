@@ -22,18 +22,18 @@ function [proc_mice_pos_data] = reconstruct_sleap_preds(sleaph5path, project, pr
     params = project.parameters;
 
     % Import Python module
-    mod = params.autoenc.module;
+    mod = project.module;
 
     % Preprocess data
-    [sequences_fp, sequences_ri, proc_mice_pos_data, sequence_length] = preprocforVAE_T_Conv(sleaph5path, params.autoenc.sequence_length);
+    [sequences_fp, sequences_ri, proc_mice_pos_data, sequence_length] = preprocforVAE_T_Conv(sleaph5path, params.autoenc.model_params.sequence_length);
 
     % Convert to Python numpy arrays
     sequences_fp = py.numpy.array(sequences_fp);
     sequences_ri = py.numpy.array(sequences_ri);
 
     % Get predictions from Python model
-    reconstructedDataPy_ri = mod.get_predictions(sequences_ri, params.autoenc.path);
-    reconstructedDataPy_fp = mod.get_predictions(sequences_fp, params.autoenc.path);
+    reconstructedDataPy_ri = mod.get_predictions(sequences_ri, params.autoenc.modelPath);
+    reconstructedDataPy_fp = mod.get_predictions(sequences_fp, params.autoenc.modelPath);
 
     % Convert the returned data back into a MATLAB array
     proc_mice_pos_data.ri.reconstructedData = squeeze_recons(double(reconstructedDataPy_ri));

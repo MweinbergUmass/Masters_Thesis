@@ -129,6 +129,9 @@ classdef Project < handle
         
         function processedFilePath = getProcessedFile(obj, originalFilePath, processingType)
             % Find the original file1 in the registry
+            if nargin < 3
+                processingType = 'default_reconstruction';
+            end
             originalFileIndex = find(strcmp({obj.fileRegistry.original}, originalFilePath), 1);
             
             if isempty(originalFileIndex)
