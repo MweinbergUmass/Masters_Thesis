@@ -119,3 +119,6 @@ nans_after = sum(isnan(proc_mice_pos_data.fp.posdata_reconstructed(:)));
 disp(['Number of NaNs before reconstruction: ' num2str(nans_before)])
 disp(['Number of NaNs after reconstruction: ' num2str(nans_after)]) %this should be close to zero but it might not be due to the quality control
 
+%% Now we will extract all the features from the data
+addpath(genpath('Embedding'))
+ComputeAllFeatures(project) %this will compute all the features for the data and store it in the project object in the directory given by project.processedDir

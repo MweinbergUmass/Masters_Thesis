@@ -3,8 +3,10 @@ function ComputeAllFeatures(project)
     proc_mice_files = project.returnDefaultReconstructionFiles();
    
     % -compute the features
-    temp_proc_mice_pos_data = load(proc_mice_files{1});
-    [temp_features] = ComputeFeatures(temp_proc_mice_pos_data, project);
+    temp_proc_mice_pos_data = load(proc_mice_files{1}).processedData;
+
+    temp_features = ComputeFeatures(temp_proc_mice_pos_data, project);
+    
 
     % initialize minmaxdata
     minmaxdata.distances.min = nan(1,size(temp_features.distance_features.values,1));
@@ -20,7 +22,7 @@ function ComputeAllFeatures(project)
     % for each proc_mice file
     for i = 1:length(proc_mice_files)
         % load the data
-        proc_mice_pos_data = load(proc_mice_files{i});
+        proc_mice_pos_data = load(proc_mice_files{i}).processedData;
 
         % compute the features
         [features] = ComputeFeatures(proc_mice_pos_data, project);
