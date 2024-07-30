@@ -9,10 +9,6 @@
 function TrainEmbedding(project)
     % find the proc_mice files
     proc_mice_files = project.returnDefaultReconstructionFiles();
-    
-    % initialize the length cell array
-    length_cell = cell(1, length(proc_mice_files));
-
    
     % start by computing the features for initial info
     % -compute the features
@@ -46,7 +42,7 @@ function TrainEmbedding(project)
         proc_mice_pos_data.features = features;
         % save the data
         save(proc_mice_files{i}, 'proc_mice_pos_data');
-        
+
     end
     
 

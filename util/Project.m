@@ -198,14 +198,19 @@ classdef Project < handle
             
             if isempty(originalFileIndex)
                 processedFilePath = '';
+                warning('File not found in registry: %s', originalFilePath);
                 return;
             end
             
             % Check if the processing type exists for this file
             if isfield(obj.fileRegistry(originalFileIndex).processed, processingType)
                 processedFilePath = obj.fileRegistry(originalFileIndex).processed.(processingType);
+                if isstruct(processedFilePath)
+                    processedFilePath = processedFilePath.filePath;
+                end
             else
                 processedFilePath = '';
+                warning('Processing type not found for file: %s', originalFilePath);
             end
         end
         
@@ -480,9 +485,9 @@ classdef Project < handle
 
             % Verify that the correct Python is being used
             disp(['Using Python version: ', char(py.sys.version)]);
-
-            % Check if required packages are installed
-            checkRequiredPackages(current_pyenv.Executable);
+            if ~contains(char(py.sys.version), '3.9') && ~contains(char(py.sys.version), '3.10') && ~contains(char(py.sys.version), '3.11')
+                warning('At least Python 3.9 is required. Please set up your Python environment accordingly.');
+            end
         end
 
         function obj = loadProject(projectFile)
