@@ -1,4 +1,4 @@
-function [amplitudes,f] = findWavelets(projections,project)
+function [amplitudes,f,Frame_amps] = findWavelets(projections,project)
 %findWavelets finds the wavelet transforms resulting from a time series
 %
 %   Input variables:
@@ -49,6 +49,10 @@ function [amplitudes,f] = findWavelets(projections,project)
             projections(:,i),f,omega0,dt)';
     end
     
+    %normalize amplitudes by the sum of the amplitudes
+    Frame_amps = sum(bigCWTMAT,2);
+    amplitudes = amplitudes./Frame_amps;
+
     
     if numProcessors > 1 && closeMatPool
         close_parpool
