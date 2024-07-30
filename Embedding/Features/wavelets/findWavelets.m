@@ -1,11 +1,10 @@
-function [amplitudes,f] = findWavelets(projections,numModes,parameters)
+function [amplitudes,f] = findWavelets(projections,numModes,project)
 %findWavelets finds the wavelet transforms resulting from a time series
 %
 %   Input variables:
 %
 %       projections -> N x d array of projection values
-%       numModes -> # of transforms to find
-%       parameters -> struct containing non-default choices for parameters
+%       parameters -> project which contains choices for parameters
 %
 %
 %   Output variables:
@@ -20,23 +19,10 @@ function [amplitudes,f] = findWavelets(projections,numModes,parameters)
 %       University of Massachusetts Amherst
 
     
-    if nargin < 3
-        parameters = [];
-        parameters = setRunParameters(parameters);
-    end
-    
-    
-    
-    L = length(projections(1,:));
-    if nargin < 2 || isempty(numModes)
-        numModes = L;
-    else
-        if numModes > L
-            numModes = L;
-        end
-    end
-    
-    
+   
+    numModes = length(projections(1,:));
+    parameters = project.parameters.wavelets;
+
     setup_parpool(parameters.numProcessors)
 
     
