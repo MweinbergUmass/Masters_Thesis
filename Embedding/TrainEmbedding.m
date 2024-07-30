@@ -34,10 +34,10 @@ function TrainEmbedding(project)
         % compute the features
         [features] = computeFeatures(proc_mice_pos_data, project);
         
-        minmaxdata.distances.min = nanmin([minmaxdata.min; features.distance_features]);
-        minmaxdata.distances.max = nanmax([minmaxdata.max; features.distance_features]);
-        minmaxdata.angles.min = nanmin([minmaxdata.min; features.angle_features]);
-        minmaxdata.angles.max = nanmax([minmaxdata.max; features.angle_features]);
+        minmaxdata.distances.min = nanmin([minmaxdata.distances.min; features.distance_features]);
+        minmaxdata.distances.max = nanmax([minmaxdata.distances.max; features.distance_features]);
+        minmaxdata.angles.min = nanmin([minmaxdata.angles.min; features.angle_features]);
+        minmaxdata.angles.max = nanmax([minmaxdata.angles.max; features.angle_features]);
 
         proc_mice_pos_data.features = features;
         % save the data
