@@ -1,16 +1,7 @@
-%% This function will:
-    % 1. Start by computing the features from all the data
-    % -Find all proc_mice file, load it, for each:
-    % -compute features
-    % -update minmaxdata
-    % -update length cell array which is somehow coupled to the proc_mice_file (maybe use file registry for this?)
-    % -save the data
-
-function TrainEmbedding(project)
+function ComputeAllFeatures(project)
     % find the proc_mice files
     proc_mice_files = project.returnDefaultReconstructionFiles();
    
-    % start by computing the features for initial info
     % -compute the features
     temp_proc_mice_pos_data = load(proc_mice_files{1});
     [temp_features] = computeFeatures(temp_proc_mice_pos_data, project);
