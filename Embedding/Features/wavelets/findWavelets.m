@@ -1,4 +1,4 @@
-function [amplitudes,f] = findWavelets(projections,numModes,project)
+function [amplitudes,f] = findWavelets(projections,project)
 %findWavelets finds the wavelet transforms resulting from a time series
 %
 %   Input variables:
