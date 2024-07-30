@@ -40,10 +40,9 @@ function TrainEmbedding(project)
         minmaxdata.angles.max = nanmax([minmaxdata.angles.max; features.angle_features]);
 
         proc_mice_pos_data.features = features;
+
         % save the data
         project.updateProcessingStatus(proc_mice_files{i}, 'features_completed', 1);
     end
-    
-
 
 end 
