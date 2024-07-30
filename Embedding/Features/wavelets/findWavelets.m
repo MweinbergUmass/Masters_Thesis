@@ -19,11 +19,16 @@ function [amplitudes,f] = findWavelets(projections,project)
 %       University of Massachusetts Amherst
 
     
-   
-    numModes = length(projections(1,:));
+    if size(projections,2) > size(projections,1)
+        projections = projections';
+    end
+    
+    numModes = size(projections,2);
     parameters = project.parameters.wavelets;
-
-    setup_parpool(parameters.numProcessors)
+    numProcessors = project.parameters.numProcessors;
+    closeMatPool = project.parameters.closeMatPool;
+    
+    setup_parpool(numProcessors);
 
     
     
@@ -45,7 +50,7 @@ function [amplitudes,f] = findWavelets(projections,project)
     end
     
     
-    if parameters.numProcessors > 1 && parameters.closeMatPool
+    if numProcessors > 1 && closeMatPool
         close_parpool
     end
     
