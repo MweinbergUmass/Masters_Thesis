@@ -19,27 +19,13 @@ function setup_parpool(desiredPoolSize)
         return
     end
 
-
     % Start the desired number of workers. Delete existing pool with wrong number
     % of workers if needed.
-    if verLessThan('matlab','8.3')
-
-        if matlabpool('size') ~= desiredPoolSize;
-            matlabpool close force
-            if desiredPoolSize > 1
-                matlabpool(desiredPoolSize);
-            end
+    g = gcp('nocreate'); % Get the current parallel pool without creating a new one
+    if isempty(g) || g.NumWorkers ~= desiredPoolSize
+        delete(g); % Delete the current pool if it exists
+        if desiredPoolSize > 1
+            parpool(desiredPoolSize); % Start a new pool with the desired number of workers
         end
-
-    else
-
-        g=gcp;
-        if g.NumWorkers ~= desiredPoolSize
-            delete(gcp('nocreate'))
-            if desiredPoolSize > 1
-                parpool(desiredPoolSize);
-            end
-        end
-
     end
-        
+end
