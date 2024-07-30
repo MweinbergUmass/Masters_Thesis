@@ -92,76 +92,100 @@ classdef Project < handle
             
             % Restore the module if it was removed
             if ~(isprop(obj,'module') && ~isempty(obj.module));
-                obj.module = py.importlib.import_module('TC_Auto');
+                obj.loadModule_PR()
             end
         end
         
-        function [processedFilePath] = addProcessedFile(obj, originalFilePath, processedData, processingType)
+        function [processedFilePath] = addProcessedFile(obj, originalFilePath, processedData, processingType, processedDataLength)
+            if nargin < 5
+                if isfield(processedData.fp, 'posdata_reconstructed')
+                    processedDataLength = length(processedData.fp.posdata_reconstructed);
+                else
+                    processedDataLength = [];
+                end 
+                
+            end
             % Generate a unique filename for the processed data
             [~, NAME, ~] = fileparts(originalFilePath);
             processedFilePath = fullfile(obj.dataDir, [NAME '_' processingType '.mat']);
             
             % Save the processed data
             save(processedFilePath, 'processedData');
-            
+                        
             % Check if the original file is already in the registry
             originalFileIndex = find(strcmp({obj.fileRegistry.original}, originalFilePath), 1);
             
             if isempty(originalFileIndex)
                 % If not, add a new entry
-                newEntry = struct(...
-                    'original', originalFilePath, ...
-                    'processed', struct(processingType, processedFilePath), ...
-                    'status', struct(...
-                        'autoencoder_completed', false, ...
-                        'sleap_extracted', false, ...
-                        'features_extracted', false ...
-                    ) ...
+                newEntry = struct('original', originalFilePath, 'processed', struct());
+                newEntry.processed.(processingType) = struct('filePath', processedFilePath, 'dataLength', processedDataLength);
+                newEntry.status = struct(...
+                    'sleap_extracted', false, ...
+                    'autoencoder_completed', false, ...
+                    'features_extracted', false ...
                 );
-                
-                if isempty(obj.fileRegistry)
-                    obj.fileRegistry = newEntry;
-                else
-                    obj.fileRegistry(end+1) = newEntry;
-                end
+                obj.fileRegistry(end+1) = newEntry;
             else
                 % If yes, add or update the processed file for this processing type
-                obj.fileRegistry(originalFileIndex).processed.(processingType) = processedFilePath;
+                obj.fileRegistry(originalFileIndex).processed.(processingType) = struct('filePath', processedFilePath, 'dataLength', processedDataLength);
             end
+            
             % Add log entry
-            logEntry = sprintf('Processed file: %s -> %s (Type: %s)', originalFilePath, processedFilePath, processingType);
+            logEntry = sprintf('Processed file: %s -> %s (Type: %s, Length: %d)', originalFilePath, processedFilePath, processingType, processedDataLength);
             obj.log{end+1} = sprintf('%s: %s', char(datetime('now')), logEntry);
             
             % Save updated project
             obj.saveProject();
         end
-        function updateProcessingStatus(obj, originalFilePath, statusType, value)
-            % Update the processing status for a specific file
-            originalFileIndex = find(strcmp({obj.fileRegistry.original}, originalFilePath), 1);
+        function updateProcessingStatus(obj, filePath, statusType, value)
+            % Update the processing status for a specific file, whether it's an original or processed file
             
+            % Try to find the file as an original file
+            originalFileIndex = find(strcmp({obj.fileRegistry.original}, filePath), 1);
+            
+            % If not found, try to find it as a processed file
+            if isempty(originalFileIndex)
+                originalFilePath = obj.getOriginalFile(filePath);
+                if ~isempty(originalFilePath)
+                    originalFileIndex = find(strcmp({obj.fileRegistry.original}, originalFilePath), 1);
+                end
+            end
+            
+            % Update the processing status if the original file is found
             if ~isempty(originalFileIndex)
                 obj.fileRegistry(originalFileIndex).status.(statusType) = value;
                 
                 % Add log entry
-                logEntry = sprintf('Updated status for file: %s, %s = %d', originalFilePath, statusType, value);
+                logEntry = sprintf('Updated status for file: %s, %s = %d', obj.fileRegistry(originalFileIndex).original, statusType, value);
                 obj.log{end+1} = sprintf('%s: %s', char(datetime('now')), logEntry);
                 
                 % Save updated project
                 obj.saveProject();
             else
-                warning('File not found in registry: %s', originalFilePath);
+                warning('File not found in registry: %s', filePath);
             end
         end
         
-        function status = getProcessingStatus(obj, originalFilePath)
-            % Get the processing status for a specific file
-            originalFileIndex = find(strcmp({obj.fileRegistry.original}, originalFilePath), 1);
+        function status = getProcessingStatus(obj, filePath)
+            % Get the processing status for a specific file, whether it's an original or processed file
             
+            % Try to find the file as an original file
+            originalFileIndex = find(strcmp({obj.fileRegistry.original}, filePath), 1);
+            
+            % If not found, try to find it as a processed file
+            if isempty(originalFileIndex)
+                originalFilePath = obj.getOriginalFile(filePath);
+                if ~isempty(originalFilePath)
+                    originalFileIndex = find(strcmp({obj.fileRegistry.original}, originalFilePath), 1);
+                end
+            end
+            
+            % Get the processing status if the original file is found
             if ~isempty(originalFileIndex)
                 status = obj.fileRegistry(originalFileIndex).status;
             else
                 status = [];
-                warning('File not found in registry: %s', originalFilePath);
+                warning('File not found in registry: %s', filePath);
             end
         end
         
@@ -426,6 +450,19 @@ classdef Project < handle
             isTrained = isfield(obj.parameters, 'autoenc') && ...
                         isfield(obj.parameters.autoenc, 'modelPath') && ...
                         exist(obj.parameters.autoenc.modelPath, 'file') == 2;
+        end
+        
+        % I need a method to take a processed file and return the matching original file        
+        function originalFile = getOriginalFile(obj, processedFile)
+            % Find the original file that matches the processed file
+            for i = 1:length(obj.fileRegistry)
+                if isfield(obj.fileRegistry(i).processed, 'default_reconstruction') && ...
+                   strcmp(obj.fileRegistry(i).processed.default_reconstruction, processedFile)
+                    originalFile = obj.fileRegistry(i).original;
+                    return;
+                end
+            end
+            originalFile = '';
         end
          
     end
