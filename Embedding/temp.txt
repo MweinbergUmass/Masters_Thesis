@@ -1,4 +1,0 @@
-Okay so far I have computed all the features...
-
-Now we need to compute wavelets for all the features
-
