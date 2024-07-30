@@ -4,13 +4,13 @@ function ComputeAllFeatures(project)
    
     % -compute the features
     temp_proc_mice_pos_data = load(proc_mice_files{1});
-    [temp_features] = computeFeatures(temp_proc_mice_pos_data, project);
+    [temp_features] = ComputeFeatures(temp_proc_mice_pos_data, project);
 
     % initialize minmaxdata
-    minmaxdata.distances.min = nan(1,length(temp_features.distance_features));
-    minmaxdata.distances.max = nan(1,length(temp_features.distance_features));
-    minmaxdata.angles.min = nan(1,length(temp_features.angle_features));
-    minmaxdata.angles.max = nan(1,length(temp_features.angle_features));
+    minmaxdata.distances.min = nan(1,size(temp_features.distance_features.values,1));
+    minmaxdata.distances.max = nan(1,size(temp_features.distance_features.values,1));
+    minmaxdata.angles.min = nan(1,size(temp_features.angle_features.values,1));
+    minmaxdata.angles.max = nan(1,size(temp_features.angle_features.values,1));
 
     clear temp_proc_mice_pos_data temp_features;
 
@@ -23,17 +23,17 @@ function ComputeAllFeatures(project)
         proc_mice_pos_data = load(proc_mice_files{i});
 
         % compute the features
-        [features] = computeFeatures(proc_mice_pos_data, project);
+        [features] = ComputeFeatures(proc_mice_pos_data, project);
         
-        minmaxdata.distances.min = nanmin([minmaxdata.distances.min; features.distance_features]);
-        minmaxdata.distances.max = nanmax([minmaxdata.distances.max; features.distance_features]);
-        minmaxdata.angles.min = nanmin([minmaxdata.angles.min; features.angle_features]);
-        minmaxdata.angles.max = nanmax([minmaxdata.angles.max; features.angle_features]);
+        minmaxdata.distances.min = nanmin([minmaxdata.distances.min; features.distance_features.values']);
+        minmaxdata.distances.max = nanmax([minmaxdata.distances.max; features.distance_features.values']);
+        minmaxdata.angles.min = nanmin([minmaxdata.angles.min; features.angle_features.values']);
+        minmaxdata.angles.max = nanmax([minmaxdata.angles.max; features.angle_features.values']);
 
         proc_mice_pos_data.features = features;
 
         % save the data
-        project.updateProcessingStatus(proc_mice_files{i}, 'features_completed', 1);
+        project.updateProcessingStatus(proc_mice_files{i}, 'features_completed', 1,proc_mice_pos_data);
     end
 
 end 

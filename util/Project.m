@@ -413,7 +413,7 @@ classdef Project < handle
         % Loop through each struct and add the default_reconstruction path to the list
         for i = 1:numel(obj.fileRegistry)
             if isstruct(obj.fileRegistry(i).processed)
-                processedFiles{end+1} = obj.fileRegistry(i).processed.(reconsmethod).filepath;
+                processedFiles{end+1} = obj.fileRegistry(i).processed.(reconsmethod).filePath;
             else
                 processedFiles{end+1} = obj.fileRegistry(i).processed.(reconsmethod);
             end
@@ -471,7 +471,7 @@ classdef Project < handle
             % Find the original file that matches the processed file
             for i = 1:length(obj.fileRegistry)
                 if isfield(obj.fileRegistry(i).processed, 'default_reconstruction') && ...
-                   strcmp(obj.fileRegistry(i).processed.default_reconstruction, processedFile)
+                   strcmp(obj.fileRegistry(i).processed.default_reconstruction.filePath, processedFile)
                     originalFile = obj.fileRegistry(i).original;
                     return;
                 end
