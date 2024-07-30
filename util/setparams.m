@@ -10,6 +10,8 @@ function params = setparams(varargin)
     params.sleaplabelspath = strcat('Data', filesep, 'Labels');
     params.sleappredspath = strcat('Data', filesep, 'Preds');
     params.autoenc.model = 'TCONV';
+    params.numProcessors = 8;
+    params.closeMatPool = false;
 
     % Set up default model parameters to match Python Autoencoder class
 
@@ -54,6 +56,24 @@ function params = setparams(varargin)
     % Should just be paths to xlsx file for adjusting
     params.features.angles_xlsx_path = strcat('Data', filesep, 'Features_XLSX', filesep, 'angle_features.xlsx');
     params.features.distances_xlsx_Path = strcat('Data', filesep, 'Features_XLSX', filesep, 'distance_features.xlsx');
+
+
+    % Params for Wavelet Transform
+
+     %number of wavelet frequencies to use
+    params.wavelets.numPeriods = 25;
+    
+    %dimensionless Morlet wavelet parameter
+    params.wavelets.omega0 = 5;
+    
+    %sampling frequency (Hz)
+    params.wavelets.samplingFreq = 30;
+        
+    %minimum frequency for wavelet transform (Hz)
+    params.wavelets.minF = .5;
+    
+    %maximum frequency for wavelet transform (Hz)
+    params.wavelets.maxF = 15;
 
 end
 
