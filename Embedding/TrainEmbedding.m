@@ -41,7 +41,7 @@ function TrainEmbedding(project)
 
         proc_mice_pos_data.features = features;
         % save the data
-        save(proc_mice_files{i}, 'proc_mice_pos_data');
+        project.addProcessedFile(proc_mice_files{i}, proc_mice_pos_data);
 
     end
     

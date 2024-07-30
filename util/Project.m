@@ -137,35 +137,40 @@ classdef Project < handle
             % Save updated project
             obj.saveProject();
         end
-        function updateProcessingStatus(obj, filePath, statusType, value)
+        function updateProcessingStatus(obj, filePath, statusType, value, processedData)
             % Update the processing status for a specific file, whether it's an original or processed file
-            
             % Try to find the file as an original file
             originalFileIndex = find(strcmp({obj.fileRegistry.original}, filePath), 1);
             
             % If not found, try to find it as a processed file
             if isempty(originalFileIndex)
-                originalFilePath = obj.getOriginalFile(filePath);
-                if ~isempty(originalFilePath)
-                    originalFileIndex = find(strcmp({obj.fileRegistry.original}, originalFilePath), 1);
-                end
+            originalFilePath = obj.getOriginalFile(filePath);
+            if ~isempty(originalFilePath)
+                originalFileIndex = find(strcmp({obj.fileRegistry.original}, originalFilePath), 1);
+            end
             end
             
             % Update the processing status if the original file is found
             if ~isempty(originalFileIndex)
-                obj.fileRegistry(originalFileIndex).status.(statusType) = value;
-                
+            obj.fileRegistry(originalFileIndex).status.(statusType) = value;
+            % Save updated project
+            if nargin == 5
+                ProcessedFilePath =  obj.getProcessedFile(originalFilePath);
+                save(ProcessedFilePath, 'processedData');
                 % Add log entry
                 logEntry = sprintf('Updated status for file: %s, %s = %d', obj.fileRegistry(originalFileIndex).original, statusType, value);
                 obj.log{end+1} = sprintf('%s: %s', char(datetime('now')), logEntry);
-                
-                % Save updated project
-                obj.saveProject();
+                obj.log{end+1} = sprintf('%s: Saved updated data for file: %s', char(datetime('now')), ProcessedFilePath);
             else
-                warning('File not found in registry: %s', filePath);
+                % Add log entry
+                logEntry = sprintf('Updated status for file: %s, %s = %d', obj.fileRegistry(originalFileIndex).original, statusType, value);
+                obj.log{end+1} = sprintf('%s: %s', char(datetime('now')), logEntry);
+            end
+            obj.saveProject();
+            else
+            warning('File not found in registry: %s', filePath);
             end
         end
-        
         function status = getProcessingStatus(obj, filePath)
             % Get the processing status for a specific file, whether it's an original or processed file
             
