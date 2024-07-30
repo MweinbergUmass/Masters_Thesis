@@ -121,4 +121,43 @@ disp(['Number of NaNs after reconstruction: ' num2str(nans_after)]) %this should
 
 %% Now we will extract all the features from the data
 addpath(genpath('Embedding'))
-ComputeAllFeatures(project) %this will compute all the features for the data and store it in the project object in the directory given by project.processedDir
+ComputeAllFeatures(project) %this will compute all the features for the data and store it in the project object in the directory given by the fileDirectory: project.fileDirectory
+
+%% Now lets take a look at some of the features
+proc_mice_pos_data2 = load(existingProcessedFile, 'processedData').processedData;
+% First, they are stored like this:
+% proc_mice_pos_data.features.angle_features
+% proc_mice_pos_data.features.distance_features
+% each of these contain the info for the features and the features are actually stored in the values field
+% lets take a look at the angle features
+figure
+subplot(1,2,1)
+plot(proc_mice_pos_data2.features.angle_features.values(1,:))
+title('Angle Feature 1')
+subplot(1,2,2)
+plot(proc_mice_pos_data2.features.angle_features.values(2,:))
+title('Angle Feature 2')
+
+
+
+%% Now we will compute the wavelets
+ComputeAllWavelets(project) %this will compute all the wavelets for the data and store it in the project object in the directory given by the fileDirectory: project.fileDirectory
+%% Now lets take a look at some of the wavelets
+% First, they are stored like this:
+% proc_mice_pos_data.wavelets.angles.amps, these are the normalized amplitudes of the wavelets
+% proc_mice_pos_data.wavelets.angles.Frame_amps, these are the frame amplitudes of the wavelets used to normalize
+% there are also the distances
+% lets take a look at a generated spectrogram
+numperiods = project.parameters.wavelets.numPeriods;
+figure
+subplot(1,2,1)
+imagesc(proc_mice_pos_data2.wavelets.angles.amps(:,1:numperiods))
+xlabel('Scale')
+ylabel('Frame')
+title('Wavelet Transform for Angle Feature 1')
+subplot(1,2,2)
+imagesc(proc_mice_pos_data2.wavelets.angles.amps(:, numperiods+1:numperiods+numperiods))
+xlabel('Scale')
+ylabel('Frame')
+title('Wavelet Transform for Angle Feature 2')
+
