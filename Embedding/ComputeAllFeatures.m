@@ -37,5 +37,7 @@ function ComputeAllFeatures(project)
         % save the data
         project.updateProcessingStatus(proc_mice_files{i}, 'features_completed', 1, proc_mice_pos_data);
     end
+    project.parameters.features.minmaxdata = minmaxdata;
+    project.saveProject();
 
 end 
