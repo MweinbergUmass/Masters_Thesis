@@ -412,7 +412,11 @@ classdef Project < handle
         processedFiles = {};
         % Loop through each struct and add the default_reconstruction path to the list
         for i = 1:numel(obj.fileRegistry)
-            processedFiles{end+1} = obj.fileRegistry(i).processed.(reconsmethod); 
+            if isstruct(obj.fileRegistry(i).processed)
+                processedFiles{end+1} = obj.fileRegistry(i).processed.(reconsmethod).filepath;
+            else
+                processedFiles{end+1} = obj.fileRegistry(i).processed.(reconsmethod);
+            end
         end
     end
     
