@@ -7,10 +7,10 @@ function ComputeAllWavelets(project)
         proc_mice_pos_data = load(proc_mice_files{i}).processedData;
 
         % compute the features
-        proc_mice_pos_data.wavelets.angles = findWavelets(proc_mice_pos_data.features.angle_features.values, project);
-        proc_mice_pos_data.wavelets.distances = findWavelets(proc_mice_pos_data.features.distance_features.values, project);
+        [proc_mice_pos_data.wavelets.angles, ~, proc_mice_pos_data.wavelets.Frame_amps] = findWavelets(proc_mice_pos_data.features.angle_features.values, project);
+        [proc_mice_pos_data.wavelets.distances, ~, proc_mice_pos_data.wavelets.Frame_amps] = findWavelets(proc_mice_pos_data.features.distance_features.values, project);
         
-
+        
         % save the data
         project.updateProcessingStatus(proc_mice_files{i}, 'wavelets_completed', 1, proc_mice_pos_data);
     end

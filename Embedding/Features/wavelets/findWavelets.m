@@ -50,7 +50,7 @@ function [amplitudes,f,Frame_amps] = findWavelets(projections,project)
     end
     
     %normalize amplitudes by the sum of the amplitudes
-    Frame_amps = sum(bigCWTMAT,2);
+    Frame_amps = sum(amplitudes,2);
     amplitudes = amplitudes./Frame_amps;
 
     
