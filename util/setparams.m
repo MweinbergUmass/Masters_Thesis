@@ -53,6 +53,11 @@ params.wavelets.samplingFreq = 30;
 params.wavelets.minF = 0.5;
 params.wavelets.maxF = 15;
 
+%% Training Embedding Parameters
+params.embedding.Num_to_sample = 12000;
+params.embedding.numNeighbors = 10;
+
+
 %% Override default parameters with user-specified values
 if ~isempty(varargin)
     user_params = varargin{1};

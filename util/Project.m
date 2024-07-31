@@ -419,6 +419,15 @@ classdef Project < handle
             end
         end
     end
+    function lengths = returnDataLengths(obj, recons_type)
+        if nargin < 2
+            recons_type = 'default_reconstruction';
+        end
+        numFiles = numel(obj.fileRegistry);
+        for i = 1:numFiles
+            lengths(i) = obj.fileRegistry(i).processed.(recons_type).dataLength;
+        end
+    end 
     
 
         function listModels(obj)
