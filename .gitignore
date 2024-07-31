@@ -9,7 +9,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 Region_Videos/*
-!Region_Videos/.gitkeep
 
 # C extensions
 *.so
