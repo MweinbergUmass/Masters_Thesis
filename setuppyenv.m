@@ -1,91 +1,62 @@
-function PYENV = setuppyenv()
-    % Check if pyenv is already configured
-    try
-        current_pyenv = pyenv;
-        disp('Current Python environment:');
-        disp(current_pyenv);
-    catch
-        error('pyenv is not configured. Please set up your Python environment first.');
+function setuppyenv(yamlFile, envName)
+    if nargin < 2
+        envName = 'MotmautoEnv';
+    end
+    if nargin < 1
+        yamlFile = 'environment.yml';
+    end
+    % Check if conda is installed
+    [status, ~] = system('conda --version');
+    if status ~= 0
+        % Install Miniconda
+        installMiniconda();
     end
     
-    % Store the current executable path
-    pythonExecutable = current_pyenv.Executable;
+    % Create the environment from YAML file
+    [status, cmdout] = system(['conda env create -f ' yamlFile ' -n ' envName]);
+    if status ~= 0
+        error(['Failed to create environment. Error: ' cmdout]);
+    end
     
-    % Verify that the correct Python is being used
-    disp(['Using Python version: ', char(py.sys.version)]);
+    % Get the path to the new Python executable
+    [~, cmdout] = system(['conda run -n ' envName ' which python']);
+    pythonPath = strtrim(cmdout);
     
-    % Check and install required packages
-    checkAndInstallRequiredPackages(pythonExecutable);
-    
-    % Reload the Python environment to recognize newly installed packages
+    % Set up the Python environment in MATLAB
     try
-        % Terminate the current Python environment
-        terminate(pyenv);
-        % Recreate the Python environment
-        PYENV = pyenv('Version', pythonExecutable);
-        disp('Python environment reloaded successfully.');
-    catch ME
-        warning('Failed to reload Python environment. You may need to restart MATLAB to recognize new packages.');
-        disp(['Error message: ' ME.message]);
-        PYENV = current_pyenv;
+        pyenv('Executable', pythonPath);
+        disp(['Successfully set up Python environment: ' pyenv.Executable]);
+    catch
+        error('Failed to set up Python environment in MATLAB.');
     end
 end
 
-function checkAndInstallRequiredPackages(pythonExecutable)
-    % Read requirements from requirements.txt
-    reqFile = 'requirements.txt';
-    fid = fopen(reqFile, 'r');
-    if fid == -1
-        error('Cannot open requirements.txt. Make sure it exists in the current directory.');
-    end
-    requirements = textscan(fid, '%s');
-    fclose(fid);
-    requirements = requirements{1};
-    
-    missingPackages = {};
-    
-    % Check each required package
-    for i = 1:length(requirements)
-        [package, version] = strtok(requirements{i}, '==');
-        version = strtrim(version);
-        
-        % Use system command to check package status
-        cmd = sprintf('"%s" -m pip show %s', pythonExecutable, package);
-        [status, cmdout] = system(cmd);
-        
-        if status == 0
-            installedVersion = regexp(cmdout, 'Version: ([\d\.]+)', 'tokens');
-            if ~isempty(installedVersion)
-                installedVersion = installedVersion{1}{1};
-                if ~isempty(version) && ~strcmp(installedVersion, version(3:end))
-                    disp(['Package ', package, ' is installed but version mismatch. Adding to update list.']);
-                    missingPackages{end+1} = requirements{i};
-                else
-                    disp(['Package ', package, ' is already installed with version ', installedVersion, '.']);
-                end
-            else
-                disp(['Package ', package, ' is installed but version could not be determined.']);
-            end
-        else
-            disp(['Package ', package, ' is not installed. Adding to installation list.']);
-            missingPackages{end+1} = requirements{i};
-        end
-    end
-    
-    % Install missing or outdated packages
-    if ~isempty(missingPackages)
-        disp('Installing/updating packages...');
-        installCmd = sprintf('"%s" -m pip install --upgrade %s', pythonExecutable, strjoin(missingPackages, ' '));
-        disp(['Running command: ', installCmd]);
-        [status, cmdout] = system(installCmd);
-        if status == 0
-            disp('Successfully installed/updated packages.');
-            disp(cmdout);
-        else
-            warning('Failed to install/update some packages. Please install them manually.');
-            disp(cmdout);
-        end
+function installMiniconda()
+    % Download Miniconda
+    if ispc
+        url = 'https://repo.anaconda.com/miniconda/Miniconda3-latest-Windows-x86_64.exe';
+        installer = 'Miniconda3-latest-Windows-x86_64.exe';
+    elseif ismac
+        url = 'https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh';
+        installer = 'Miniconda3-latest-MacOSX-x86_64.sh';
     else
-        disp('All required packages are already installed with correct versions.');
+        url = 'https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh';
+        installer = 'Miniconda3-latest-Linux-x86_64.sh';
+    end
+    
+    websave(installer, url);
+    
+    % Install Miniconda
+    if ispc
+        system([installer ' /S /D=%UserProfile%\Miniconda3']);
+    else
+        system(['bash ' installer ' -b -p $HOME/miniconda3']);
+    end
+    
+    % Add Miniconda to PATH
+    if ispc
+        setenv('PATH', [getenv('PATH') ';%UserProfile%\Miniconda3;%UserProfile%\Miniconda3\Scripts']);
+    else
+        setenv('PATH', [getenv('PATH') ':$HOME/miniconda3/bin']);
     end
 end
