@@ -1,8 +1,8 @@
-function setuppyenv(yamlFile, envName)
-    if nargin < 2
+function setuppyenv(envName,yamlFile)
+    if nargin < 1
         envName = 'MotmautoEnv';
     end
-    if nargin < 1
+    if nargin < 2
         yamlFile = 'environment.yml';
     end
 
@@ -57,9 +57,6 @@ function setuppyenv(yamlFile, envName)
         pyenv('Version', pythonPath);
         disp(['Successfully set up Python environment: ' pyenv().Executable]);
         
-        % Verify Python version
-        pyVersion = py.sys.version_info;
-        disp(['Python version: ' num2str(pyVersion.major) '.' num2str(pyVersion.minor) '.' num2str(pyVersion.micro)]);
     catch ME
         error('Failed to set up Python environment in MATLAB. Error: %s', ME.message);
     end
