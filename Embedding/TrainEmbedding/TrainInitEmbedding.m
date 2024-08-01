@@ -130,7 +130,7 @@ function TrainInitEmbedding(project)
     % Now we need to compute the embedding
     project.load_TSNE_MLP();
     parameters = project.parameters.embedding;
-    Y_embedded = project.module.runTsne(combined_distance_matrix, parameters.perplexity_scale, parameters.numComponents, parameters.verbose, parameters.n_iter);
+    Y_embedded = double(project.module.runTsne(combined_distance_matrix, parameters.perplexity_scale, parameters.numComponents, parameters.verbose, parameters.n_iter));
 
     % Now we need to save everything
     save(fullfile(Embeddingdir, 'Y_embedded_training.mat'), 'Y_embedded');

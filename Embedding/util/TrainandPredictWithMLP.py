@@ -69,8 +69,8 @@ def run_run_init_unif_RunModel(): # run the predictions for unif
     modelPath = 'Models/unif_MLP.joblib'
     runModel(X_data=X_data, modelPath=modelPath, savename=savename)
                
-def trainModel(X_tr, y_tr, X_te, y_te, savename, PlotsOn=True):
-    mlp = MLPRegressor(hidden_layer_sizes=(512,256,128,64),verbose=True,early_stopping=True,validation_fraction=0.1,batch_size=512)
+def trainModel(X_tr, y_tr, X_te, y_te, savename,verbose=True,early_stopping=True, validation_fraction=0.1,batch_size=512,PlotsOn=True):
+    mlp = MLPRegressor(hidden_layer_sizes=(512,256,128,64),verbose=verbose,early_stopping=early_stopping,validation_fraction=validation_fraction,batch_size=batch_size)
     mlp.fit(X_tr, y_tr)
     pred_te = mlp.predict(X_te)
     var_explained = pearsonr(y_te.flatten(),pred_te.flatten())[0]**2
