@@ -479,6 +479,17 @@ classdef Project < handle
                 end
             end
         end
+        function addDefaultAutoModel(obj, defaultmodelpath)
+            if nargin < 2 || ~exist("defaultmodelpath","var")
+                defaultmodelpath = fullfile(fileparts(pwd), 'Pose_Reconstruction','Models', 'conv_autoencoder_model_default');
+            end
+            source = defaultmodelpath;
+            destination = fullfile(obj.modelsDir, ['conv_autoencoder_model_default', '.h5']);
+            copyfile(source,destination)
+            obj.parameters.autoenc.modelPath = destination;
+            obj.log{end+1} = sprintf('%s: Set current model to: %s', datetime('now'), 'default model');
+            obj.saveProject();
+        end
 
         function setCurrentModel(obj, modelName)
             % Set the current model to use for predictions
