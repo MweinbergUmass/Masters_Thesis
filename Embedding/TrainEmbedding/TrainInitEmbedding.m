@@ -1,4 +1,4 @@
-function TrainEmbedding(project)
+function TrainInitEmbedding(project)
     % assumes ComputeAllFeatures and ComputeAllWavelets have been run
 
     % First we need to figure out the total number of frames there are and how many we want to grab from each file
