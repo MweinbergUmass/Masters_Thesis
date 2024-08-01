@@ -37,7 +37,8 @@ function ComputeAllFeatures(project)
         % save the data
         project.updateProcessingStatus(proc_mice_files{i}, 'features_extracted', 1, proc_mice_pos_data);
     end
+    project.parameters.features.numAngleFeatures = size(features.angle_features.values,2);
+    project.parameters.features.numDistanceFeatures = size(features.distance_features.values,2);
     project.parameters.features.minmaxdata = minmaxdata;
     project.saveProject();
-
 end 

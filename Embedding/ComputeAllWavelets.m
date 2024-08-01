@@ -30,3 +30,7 @@ function ComputeAllWavelets(project)
         % save the data
         project.updateProcessingStatus(proc_mice_files{i}, 'wavelets_completed', 1, proc_mice_pos_data);
     end
+    project.parameters.features.numWaveletAngleFeatures = size(proc_mice_pos_data.wavelets.angles.amps,2);
+    project.parameters.features.numWaveletDistanceFeatures = size(proc_mice_pos_data.wavelets.distances.amps,2);
+
+    project.saveProject();
