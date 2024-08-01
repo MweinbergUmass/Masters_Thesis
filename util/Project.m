@@ -513,6 +513,69 @@ classdef Project < handle
             end
             originalFile = '';
         end
+        % add a method to  % Return the runDir and metadata
+        % out.runDir = runDir;
+        % out.metadata = metadata;
+        % % Now we need to couple all this with the project
+        % project.addMLPModel(runDir, metadata); % How should this be implemented? 
+        function addMLPModel(obj, runDir, metadata)
+            % Add the MLP model to the project
+            obj.parameters.embedding.mlp.runDir = runDir;
+            obj.parameters.embedding.mlp.metadata = metadata;
+            obj.log{end+1} = sprintf('%s: Added MLP model to project', datetime('now'));
+            obj.saveProject();
+        end
+        % now we need a method to select the correct mlp model which defaults to the most recent one
+        
+        function setMLPModel(obj, mlpfolder)
+            % mlpfolder should be a datetime
+            % Set the MLP model to use for predictions
+            outputdirname = obj.parameters.embedding.mlp.outputdir;
+            outputdirpath = fullfile(obj.baseDir, 'data', 'EmbeddingData', outputdirname);
+            if nargin < 2
+                % the goal here is to point to the most recent model in the output directory
+                % we need to grab the most recent model from the output directory
+                % outputdirname = model_output
+                % outputdirpath = baseDir/data/EmbeddingData/outputdirname        
+                OutputDir = dir(outputdirpath);
+                
+                modelFolders = OutputDir([OutputDir.isdir]);
+                modelFolders = modelFolders(~ismember({modelFolders.name}, {'.', '..'}));
+                if isempty(modelFolders)
+                    error('No MLP models found in %s', OutputDir);
+                end
+                
+                modelDates = datetime({modelFolders.date}, 'InputFormat', 'dd-MMM-yyyy HH:mm:ss');
+                [~, idx] = max(modelDates);
+                mlpfolder = modelFolders(idx).name;
+                
+                modelPath = fullfile(outputdirpath, mlpfolder, obj.parameters.embedding.mlp.model_name);
+                mlpDirPath = fullfile(outputdirpath, mlpfolder);
+                
+                obj.parameters.embedding.mlp.runDir = mlpDirPath;
+                % now we need to grab the metadata from the model folder
+                metadataPath = fullfile(mlpDirPath, 'metadata.json');
+                metadata = jsondecode(fileread(metadataPath));
+                obj.parameters.embedding.mlp.metadata = metadata;
+                % now log the action
+                obj.log{end+1} = sprintf('%s: Set current MLP model to: %s', datetime('now'), modelPath);
+                obj.saveProject();
+                return
+            elseif nargin == 2
+                % now we need to construct the full path to the model which is basedir/data/EmbeddingData/model_output/datetime/model.joblib
+                mlpDirPath = fullfile(outputdirpath, mlpfolder);
+                obj.parameters.embedding.mlp.runDir = mlpDirPath;
+                metadataPath = fullfile(mlpDirPath, 'metadata.json');
+                metadata = jsondecode(fileread(metadataPath));
+                obj.parameters.embedding.mlp.metadata = metadata;
+                % now log the action
+                obj.log{end+1} = sprintf('%s: Set current MLP model to: %s', datetime('now'), mlpfolder);
+                obj.saveProject();
+
+               
+            end
+
+        end 
          
     end
     %% TODO: Need to implement Reconstruction next, Done
