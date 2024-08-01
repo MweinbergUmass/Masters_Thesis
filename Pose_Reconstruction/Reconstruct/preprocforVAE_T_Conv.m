@@ -1,17 +1,17 @@
-function [sequences_fp,sequences_ri,proc_mice_pos_data,sequence_length]= preprocforVAE_T_Conv(sleaph5path,sequence_length,features_means)
-    if nargin < 2
+function [sequences_fp,sequences_ri,proc_mice_pos_data,sequence_length]= preprocforVAE_T_Conv(project,sleaph5path,sequence_length,features_means)
+    if nargin < 3
         sequence_length = 15;
     end 
-    if nargin < 3
+    if nargin < 4
         load(strcat('Data', filesep, 'Static_AutoData', filesep, 'features_means'),'features_means');
     end 
-    if nargin < 4
+    if nargin < 5
         load(strcat('Data', filesep, 'Static_AutoData', filesep, 'reference_frame'),'reference_frame');
     end 
         
     
     
-    mice_pos_data = Sleapdataproc(sleaph5path);
+    mice_pos_data = Sleapdataproc(project, sleaph5path);
     proc_mice_pos_data.node_names = mice_pos_data.node_names;
     proc_mice_pos_data.sleappath = sleaph5path;
 

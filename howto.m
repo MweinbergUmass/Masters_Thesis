@@ -163,3 +163,4 @@ title('Wavelet Transform for Angle Feature 2')
 %%
 TrainInitEmbedding(project)
 %%
+TrainMLP(project)
