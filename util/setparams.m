@@ -62,6 +62,13 @@ params.embedding.perplexity_scale = 100;
 params.embedding.verbose = int32(2);
 params.embedding.n_iter = int32(1000);
 
+%trainModel(X_tr, y_tr, X_te, y_te, savename,verbose=True,early_stopping=True, validation_fraction=0.1,batch_size=512,PlotsOn=True):
+params.embedding.mlp.savename = 'MLP_model.h5';
+params.embedding.mlp.early_stopping = true;
+params.embedding.mlp.validation_fraction = 0.1;
+params.embedding.mlp.batch_size = int32(512);
+params.embedding.mlp.PlotsOn = true;
+params.embedding.mlp.verbose = true;
 
 %% Override default parameters with user-specified values
 if ~isempty(varargin)
