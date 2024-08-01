@@ -139,4 +139,5 @@ function TrainInitEmbedding(project)
     
     % Save the row correspondence information
     save(fullfile(Embeddingdir, 'row_correspondence.mat'), 'rowCorrespondence');
+    
 end
