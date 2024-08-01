@@ -56,6 +56,11 @@ params.wavelets.maxF = 15;
 %% Training Embedding Parameters
 params.embedding.TrainingSetSize = 12000;
 params.embedding.numNeighbors = 10;
+params.embedding.numComponents = int32(2);
+params.embedding.perplexity_scale = 100;
+% verbose=2,n_iter=1000
+params.embedding.verbose = int32(2);
+params.embedding.n_iter = int32(1000);
 
 
 %% Override default parameters with user-specified values
