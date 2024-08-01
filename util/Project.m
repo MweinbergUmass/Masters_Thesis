@@ -16,9 +16,10 @@ classdef Project < handle
     end
     
     methods
-        function obj = Project(projectName, baseDir, params)
+        function obj = Project(projectName, params)
+            baseDir = fullfile('Projects',projectName);
             % Constructor
-            if nargin >= 2
+            if nargin >= 1
                 obj.name = projectName;
                 obj.creationDate = datetime('now');
                 obj.baseDir = baseDir;
@@ -53,7 +54,7 @@ classdef Project < handle
                 end
                 
                 % Handle parameters
-                if nargin < 3 || isempty(params)
+                if nargin < 2 || isempty(params)
                     obj.parameters = setparams(); %need to somehow implement this method?
                 else
                     obj.parameters = params;
@@ -481,18 +482,20 @@ classdef Project < handle
         end
         function addDefaultAutoModel(obj, defaultmodelpath)
             if nargin < 2 || ~exist("defaultmodelpath","var")
-                defaultmodelpath = fullfile(fileparts(pwd), 'Pose_Reconstruction','Models', 'conv_autoencoder_model_default');
-            end
+               [parDir, curdir, ~] = fileparts(pwd);
+                defaultmodelpath = fullfile(parDir,curdir, 'Pose_Reconstruction','Models', 'conv_autoencoder_model_default.h5');
+            end 
             source = defaultmodelpath;
             destination = fullfile(obj.modelsDir, ['conv_autoencoder_model_default', '.h5']);
             copyfile(source,destination)
-            obj.parameters.autoenc.modelPath = destination;
             obj.log{end+1} = sprintf('%s: Set current model to: %s', datetime('now'), 'default model');
             obj.saveProject();
-        end
+        end 
+
 
         function setCurrentModel(obj, modelName)
             % Set the current model to use for predictions
+            
             modelPath = fullfile(obj.modelsDir, [modelName, '.h5']);
             if ~exist(modelPath, 'file')
                 error('Model %s does not exist.', modelName);
