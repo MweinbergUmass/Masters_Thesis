@@ -12,6 +12,7 @@ classdef Project < handle
         filePatterns
         modelsDir
         module
+        osinfo
     end
     
     methods
@@ -28,6 +29,15 @@ classdef Project < handle
                 'preds', '*.analysis.h5', ...
                 'labels', '*.analysis.h5' ...
                 );
+                % osinfo will be indicate if the system is windows or linux using ismac and ispc
+                if ismac
+                    obj.osinfo = 'mac';
+                elseif ispc
+                    obj.osinfo = 'windows';
+                else
+                    obj.osinfo = 'linux';
+                end
+                
                 obj.loadModule();
                 
                 % Create project and data directories if they don't exist
