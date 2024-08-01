@@ -56,6 +56,12 @@ class Autoencoder:
     def save_model(self, save_path):
         self.model.save(save_path)
 
+# I want a function which simply reads in an h5 file, given a path, and a dataset name
+def h5read(file_path, dataset_name):
+    with h5py.File(file_path, 'r') as file:
+        data = file[dataset_name][:]
+    return data
+
 def load_v73_mat_file(file_path, var_name='X_data_all'):
     with h5py.File(file_path, 'r') as file:
         X_data_all = file[var_name][:]
