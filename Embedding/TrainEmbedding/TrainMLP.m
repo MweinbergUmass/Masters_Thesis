@@ -1,7 +1,7 @@
 function TrainMLP(project)
    % okay we have already created the y_embedded
    % we need to perform the train test split on the y_embedded and the features
-   Embeddingdir = fullfile(project.dataDir, 'EmbeddingData/');
+    Embeddingdir = fullfile(project.dataDir, 'EmbeddingData/');
     if ~exist(Embeddingdir, 'dir')
         error('Embedding data does not exist. Please run TrainInitEmbedding first.');
     end
@@ -17,14 +17,57 @@ function TrainMLP(project)
     Y_test = Y_embedded(testindices, :);
     features_train = features_all(trainindices, :);
     features_test = features_all(testindices, :);
-    % now we need to train the MLP
+    
+
+    % Now we need to train the MLP
     project.load_TSNE_MLP();
     parameters = project.parameters.embedding.mlp;
-    savename = parameters.savename;
-    savename = fullfile(Embeddingdir, savename);
-    %trainModel(X_tr, y_tr, X_te, y_te, savename,verbose=True,early_stopping=True, validation_fraction=0.1,batch_size=512,PlotsOn=True):
-    project.module.trainModel(features_train, Y_train, features_test, Y_test, parameters.savename, parameters.verbose, parameters.early_stopping, parameters.validation_fraction, parameters.batch_size, parameters.PlotsOn);
 
+    mlpOutputDir = fullfile(Embeddingdir, parameters.outputdir);
+    if ~exist(mlpOutputDir, 'dir')
+        mkdir(mlpOutputDir);
+    end
+    
+    % Call the Python function with the output directory
+    pythonOutput = project.module.trainModel(features_train, Y_train, features_test, Y_test, ...
+        parameters.model_name, parameters.verbose, parameters.early_stopping, ...
+        parameters.validation_fraction, parameters.batch_size, parameters.epochs, ...
+        mlpOutputDir);
 
+   
+    runDir = char(pythonOutput{'run_dir'});
+    metadatapath = fullfile(runDir, 'metadata.json');
+    metadata = jsondecode(fileread(metadatapath));
 
-end
+    % Load the MATLAB data
+    plotData = load(fullfile(runDir, 'plot_data.mat'));
+
+    % Plot training loss
+    % lets not actually display the plot here
+
+    fig = figure('Visible', 'off');
+    plot(plotData.epochs, plotData.loss_curve);
+    title('Model Loss during Training');
+    xlabel('Epochs');
+    ylabel('Loss');
+    saveas(fig, fullfile(runDir, 'training_loss.png'));
+    close(fig);
+    
+    % Create and save predictions vs ground truth plot without displaying
+    fig = figure('Visible', 'off');
+    scatter(plotData.y_true, plotData.y_pred);
+    hold on;
+    plot([min(plotData.y_true), max(plotData.y_true)], [min(plotData.y_true), max(plotData.y_true)], 'r--');
+    title(sprintf('Predictions vs True Values (R^2 = %.2f)', plotData.r_squared));
+    xlabel('True Values');
+    ylabel('Predictions');
+    saveas(fig, fullfile(runDir, 'PredsVSgt.png'));
+    close(fig);
+
+    % Now we need to couple all this with the project
+    project.addMLPModel(runDir, metadata); 
+    [~, date, ~] = fileparts(runDir);
+    project.setMLPModel(date);
+    project.saveProject();
+
+end 
