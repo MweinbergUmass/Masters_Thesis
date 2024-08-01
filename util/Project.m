@@ -28,7 +28,7 @@ classdef Project < handle
                 'preds', '*.analysis.h5', ...
                 'labels', '*.analysis.h5' ...
                 );
-                obj.loadModule_PR();
+                obj.loadModule();
                 
                 % Create project and data directories if they don't exist
                 if ~exist(obj.baseDir, 'dir')
@@ -59,26 +59,52 @@ classdef Project < handle
                 error('Project constructor requires either 0, 2, or 3 arguments');
             end
         end
-        function loadModule_PR(obj)
-            % Get the current directory
-            
-            % Construct the path to the Util directory
-            utilDir = fullfile(pwd, 'Pose_Reconstruction/Util');
-            
-            % Add the Util directory to Python's sys.path
-            if count(py.sys.path, utilDir) == 0
-                insert(py.sys.path, int32(0), utilDir);
+        function loadModule(obj, moduleType)
+            if nargin < 2
+                moduleType = 'TC_Auto';
             end
             
-            % Now import the module
-            try
-                obj.module = py.importlib.import_module('TC_Auto');
-                disp('Successfully imported TC_Auto module');
-            catch ME
-                error('Failed to import TC_Auto module: %s', ME.message);
+            if strcmp(moduleType, 'TC_Auto')
+                load_TC_auto(obj)
+            end
+            if strcmp(moduleType, 'TSNE_MLP')
+                load_TSNE_MLP(obj)
             end
         end
-        
+        function load_TC_auto(obj)
+            % Load the TC_Auto module
+            utilDir = fullfile(pwd, 'Pose_Reconstruction/Util');
+                
+                % Add the Util directory to Python's sys.path
+                if count(py.sys.path, utilDir) == 0
+                    insert(py.sys.path, int32(0), utilDir);
+                end
+                
+                % Now import the module
+                try
+                    obj.module = py.importlib.import_module('TC_Auto');
+                    disp('Successfully imported TC_Auto module');
+                catch ME
+                    error('Failed to import TC_Auto module: %s', ME.message);
+                end
+        end
+        function load_TSNE_MLP(obj)
+            % Load the TSNE_MLP module
+            utilDir = fullfile(pwd, 'Embedding/util');
+                
+                % Add the Util directory to Python's sys.path
+                if count(py.sys.path, utilDir) == 0
+                    insert(py.sys.path, int32(0), utilDir);
+                end
+                
+                % Now import the module
+                try
+                    obj.module = py.importlib.import_module('TrainandPredictWithMLP');
+                    disp('Successfully imported TSNE_MLP module');
+                catch ME
+                    error('Failed to import TSNE_MLP module: %s', ME.message);
+                end
+        end        
         function saveProject(obj)
             % Save the project structure
             if isprop(obj,'module') && ~isempty(obj.module);
@@ -92,7 +118,7 @@ classdef Project < handle
             
             % Restore the module if it was removed
             if ~(isprop(obj,'module') && ~isempty(obj.module));
-                obj.loadModule_PR()
+                obj.loadModule()
             end
         end
         
@@ -514,7 +540,7 @@ classdef Project < handle
                 loaded = load(projectFile);
                 obj = loaded.obj;
                 disp(['Loaded project: ' obj.name]);
-                obj.loadModule_PR();
+                obj.loadModule();
             else
                 error('Project file does not exist.');
             end
