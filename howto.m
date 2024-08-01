@@ -4,7 +4,7 @@
 %Lets add all subfolders to the path first
 addpath(genpath('Pose_Reconstruction'));
 addpath("util/")
-setuppyenv();
+%setuppyenv();
 %%
 % set params
  default_model_params = struct(... 
@@ -160,4 +160,6 @@ imagesc(proc_mice_pos_data2.wavelets.angles.amps(:, numperiods+1:numperiods+nump
 xlabel('Scale')
 ylabel('Frame')
 title('Wavelet Transform for Angle Feature 2')
-
+%%
+TrainInitEmbedding(project)
+%%
