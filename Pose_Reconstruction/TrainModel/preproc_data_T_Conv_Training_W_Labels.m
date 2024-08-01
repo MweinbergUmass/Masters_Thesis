@@ -16,8 +16,8 @@ function preproc_data_T_Conv_Training_W_Labels(project)
     % Process each selected file
     for i = 1:num_files
         disp(['Processing File num: ', num2str(i)])
-        mice_pos_data_preds = Sleapdataproc(selected_files_preds{i});
-        mice_pos_data_labels = Sleapdataproc(selected_files_labels{i});
+        mice_pos_data_preds = Sleapdataproc(project,selected_files_preds{i});
+        mice_pos_data_labels = Sleapdataproc(project,selected_files_labels{i});
     
         % Process ri_mouse data
         temp_ri_stru_preds = ego_center_v4(reference_frame, mice_pos_data_preds.ri_mouse);
