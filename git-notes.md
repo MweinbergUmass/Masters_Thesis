@@ -22,6 +22,9 @@ git pull origin main
 
 # Create and switch to a new feature branch
 git checkout -b feature-name
+
+# Pushes branch to remote
+git push --set-upstream origin
 ```
 
 ### 2. Making Changes
