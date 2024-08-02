@@ -147,10 +147,61 @@ def runModel(X_data, modelPath, savename):
     savemat(savename, Y_embedded_dict)
     return Y_embedded
 
-def runModel_V2(X_data, modelPath='Models/unif_MLP.joblib'):
-    mlp = load(modelPath)
-    Y_embedded = mlp.predict(X_data)
-    return Y_embedded
+import pickle
+
+import json
+import numpy as np
+
+def runModel_V2(X_data, modelPath='Models/converted_model.json'):
+    def custom_load(file_path):
+        try:
+            with open(file_path, 'r') as f:
+                return json.load(f)
+        except Exception as e:
+            print(f"JSON loading failed: {str(e)}")
+            raise ValueError("Unable to load the model data.")
+
+    def get_activation_function(name):
+        if name == 'relu':
+            return lambda x: np.maximum(0, x)
+        elif name == 'tanh':
+            return np.tanh
+        elif name == 'logistic':
+            return lambda x: 1 / (1 + np.exp(-x))
+        elif name == 'identity':
+            return lambda x: x
+        else:
+            raise ValueError(f"Unsupported activation function: {name}")
+
+    def predict(X, model_data):
+        activation = get_activation_function(model_data['params']['activation'])
+        
+        # Apply the activation function to all layers except the last
+        for layer in model_data['coefs_and_intercepts'][:-1]:
+            X = activation(np.dot(X, layer['weights']) + layer['biases'])
+        
+        # For the last layer, just apply the linear transformation
+        last_layer = model_data['coefs_and_intercepts'][-1]
+        return np.dot(X, last_layer['weights']) + last_layer['biases']
+
+    try:
+        model_data = custom_load(modelPath)
+        
+        # Check input size
+        if X_data.shape[1] != model_data['input_size']:
+            raise ValueError(f"Input data should have {model_data['input_size']} features, but has {X_data.shape[1]}")
+
+        Y_embedded = predict(X_data, model_data)
+        return Y_embedded
+    except Exception as e:
+        print(f"Error in runModel_V2: {str(e)}")
+        raise
+
+# Add this line to help with debugging
+print("Python function runModel_V2 defined successfully")
+
+# Add this line to help with debugging
+print("Python function runModel_V2 defined successfully")
 
 
 def load_v73_mat_file(file_path, var_name='X_data_all'):
