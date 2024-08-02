@@ -71,6 +71,13 @@ params.embedding.mlp.epochs = int32(200);
 params.embedding.mlp.outputdir = 'model_output';
 params.embedding.mlp.model_name = 'model.joblib';
 
+% add params for segmentation
+params.segmentation.sigma = 1;
+params.segmentation.n_bins = 50;
+params.segmentation.plotResults = false;
+params.segmentation.plotStyle.Colormap = 'jet';
+params.segmentation.plotStyle.LineWidth = 2;
+
 
 %% Override default parameters with user-specified values
 if ~isempty(varargin)
