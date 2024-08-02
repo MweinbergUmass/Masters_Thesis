@@ -1,4 +1,6 @@
 function [proc_mice_pos_data] = Embedoos_default(proc_mice_pos_data_path, project)
+    
+    project.addDefaultMLPModel();
     project.load_TSNE_MLP();
     mod = project.module;
     proc_mice_pos_data = load(proc_mice_pos_data_path).processedData;
@@ -37,13 +39,13 @@ function [proc_mice_pos_data] = Embedoos_default(proc_mice_pos_data_path, projec
     projectedData_angles = ProjectNewData(angles, ReEmbedInfo.mu_angles, ReEmbedInfo.coeffs_angles, ReEmbedInfo.NumComps_angles);
     projectedData_distances = ProjectNewData(distances, ReEmbedInfo.mu_dists, ReEmbedInfo.coeffs_distances, ReEmbedInfo.NumComps_distances);
     
-    CWTMat_Angles = findWavelets(projectedData_angles, ReEmbedInfo.NumComps_angles);
+    CWTMat_Angles = findWavelets(projectedData_angles, project);
     CWTMat_Angles = CWTMat_Angles ./ sum(CWTMat_Angles,2);
     
     proc_mice_pos_data.wavelets.angles.amps = CWTMat_Angles;
     proc_mice_pos_data.wavelets.angles.Frame_amps = sum(CWTMat_Angles,2);
 
-    CWTMat_Distances = findWavelets(projectedData_distances, ReEmbedInfo.NumComps_distances);
+    CWTMat_Distances = findWavelets(projectedData_distances, project);
     CWTMat_Distances = CWTMat_Distances ./ sum(CWTMat_Distances,2);
 
     proc_mice_pos_data.wavelets.distances.amps = CWTMat_Angles;

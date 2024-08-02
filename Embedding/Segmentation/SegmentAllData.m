@@ -103,5 +103,8 @@ function SegmentAllData(project)
     segmentation_data.maxVal = maxVal;
 
     save(fullfile(outdir, 'segmentation_data.mat'), 'segmentation_data');
+    project.parameters.segmentation.segmentation_data = segmentation_data;
+    project.parameters.segmentation.segmentation_data_path = fullfile(outdir, 'segmentation_data.mat');
+    project.saveProject();
 
 end

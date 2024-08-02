@@ -23,7 +23,7 @@ function [proc_mice_pos_data] = reconstruct_sleap_preds(sleaph5path, project, pr
     % Import Python module
     mod = project.module;
     % Preprocess data
-    [sequences_fp, sequences_ri, proc_mice_pos_data, sequence_length] = preprocforVAE_T_Conv(project, sleaph5path, params.autoenc.model_params.sequence_length);
+    [sequences_fp, sequences_ri, proc_mice_pos_data, sequence_length] = preprocforVAE_T_Conv(project, sleaph5path, params.autoenc.model_parameters.sequence_length);
     % Convert to Python numpy arrays
     sequences_fp = py.numpy.array(sequences_fp);
     sequences_ri = py.numpy.array(sequences_ri);

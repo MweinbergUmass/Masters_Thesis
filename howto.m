@@ -23,7 +23,7 @@ addpath("util/")
     'LR_patience', (10) ...
 );
 params = setparams(default_model_params); 
-disp(params.autoenc.model_params)
+disp(params.autoenc.model_parameters)
 %% checking if stuff exists and if not, running it.
 if ~exist('testDir', 'dir')
     project = Project('testDir', params); %this creates a project object which holds the data directory and the parameters and loads the python module
@@ -167,4 +167,10 @@ TrainMLP(project)
 %%
 Embedalldata(project)
 %%
-
+SegmentAllData(project)
+%%
+Embedoos(proc_mice_pos_data.filepath, project)
+%%
+segment(proc_mice_pos_data.filepath,project)
+%% for using default models
+[proc_mice_pos_data] = Embedoos_default(proc_mice_pos_data.filepath, project);

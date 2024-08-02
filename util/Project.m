@@ -400,7 +400,7 @@ classdef Project < handle
             
             try
                 % Call the training function
-                param_dict = params_to_python_dict(obj.parameters.autoenc.model_params);
+                param_dict = params_to_python_dict(obj.parameters.autoenc.model_parameters);
                 obj.module.trainmodel(...
                     obj.parameters.autoenc.trainingsetpath, ...
                     obj.parameters.autoenc.features_means_path, ...
@@ -495,12 +495,12 @@ classdef Project < handle
         end 
         function addDefaultMLPModel(obj, defaultmodelpath)
             if nargin < 2 || ~exist("defaultmodelpath","var")
-                defaultmodelpath = fullfile(pwd, 'Embedding','Models', 'unif_MLP.joblib');
+                defaultmodelpath = fullfile(pwd, 'Data','Default_MLP', 'converted_model.json');
             end 
             source = defaultmodelpath;
-            destination = fullfile(obj.modelsDir, ['unif_MLP', '.joblib']);
+            destination = fullfile(obj.modelsDir, ['unif_MLP', '.json']);
             copyfile(source,destination)
-            obj.parameters.embedding.default_model_path = destination;
+            obj.parameters.embedding.mlp.default.model_path = destination;
             obj.log{end+1} = sprintf('%s: Set current model to: %s', datetime('now'), 'default model');
             obj.saveProject();
             
