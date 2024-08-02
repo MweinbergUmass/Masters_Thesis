@@ -87,6 +87,95 @@ git branch -d feature-name
 git push origin --delete feature-name
 ```
 
+## Conflict Resolution in Git
+
+Conflicts occur when Git can't automatically merge changes from different branches. This typically happens when two branches have modified the same part of a file. Here's how conflict resolution works:
+
+### When Conflicts Occur
+
+Conflicts can arise in several scenarios:
+1. When merging branches
+2. When rebasing a branch
+3. When pulling changes from a remote repository
+
+### The Conflict Resolution Process
+
+1. **Git Detects a Conflict**: When Git can't automatically merge changes, it marks the file as conflicted and halts the merging process.
+
+2. **Identifying Conflicted Files**: Use `git status` to see which files have conflicts.
+
+3. **Understanding Conflict Markers**: Git adds conflict markers to the affected files:
+   ```
+   <<<<<<< HEAD
+   Your changes
+   =======
+   Changes from the branch you're merging
+   >>>>>>> branch-name
+   ```
+
+4. **Resolving the Conflict**: 
+   - Open the conflicted file in your text editor.
+   - Decide which changes to keep (yours, theirs, or a combination).
+   - Remove the conflict markers and edit the file to its final desired state.
+
+5. **Mark as Resolved**: After editing, add the resolved file to the staging area:
+   ```bash
+   git add <resolved-file>
+   ```
+
+6. **Complete the Merge**: Once all conflicts are resolved, complete the merge:
+   ```bash
+   git commit
+   ```
+
+### Example of Resolving a Conflict
+
+Let's say you're merging `feature-branch` into `main` and encounter a conflict:
+
+```bash
+git checkout main
+git merge feature-branch
+# Conflict occurs
+```
+
+You see:
+```
+Auto-merging example.txt
+CONFLICT (content): Merge conflict in example.txt
+Automatic merge failed; fix conflicts and then commit the result.
+```
+
+1. Open `example.txt` and you might see:
+   ```
+   <<<<<<< HEAD
+   This is the original line in main
+   =======
+   This is the modified line in feature-branch
+   >>>>>>> feature-branch
+   ```
+
+2. Edit the file to resolve the conflict:
+   ```
+   This is the resolved line combining both changes
+   ```
+
+3. Stage the resolved file:
+   ```bash
+   git add example.txt
+   ```
+
+4. Complete the merge:
+   ```bash
+   git commit
+   ```
+
+### Best Practices for Conflict Resolution
+
+1. **Use Git Tools**: Git GUIs and IDE integrations can make conflict resolution more visual and easier to manage.
+2. **Regular Integration**: Frequently merge the main branch into your feature branches to reduce the likelihood of large conflicts.
+
+
+
 ## Important Reminders
 
 - Always ensure your `main` branch has **production-ready** code.
