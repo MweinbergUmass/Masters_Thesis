@@ -21,10 +21,9 @@ def runTsne(distance_matrix,perplexity_scale,n_components=2,verbose=2,n_iter=100
     Y_embedded = tsne.fit_transform(distance_matrix)
     return Y_embedded
 
-def Embed(datapath, savename):
-    Data = loadmat(datapath)['X_data_all']
-    modelpath = 'Models/unif_MLP.joblib'
-    Y_embedded = runModel(Data, modelpath, savename)
+def Embed(data, modelpath):
+    mlp = load(modelpath)
+    Y_embedded = mlp.predict(data)
     return Y_embedded
 
 def load_unif_data():
