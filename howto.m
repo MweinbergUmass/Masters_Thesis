@@ -75,7 +75,7 @@ end
 
 disp('Hello Git')
 disp('Hello Git Again')
-
+disp('Max is cool')
 %% Okay the structure of the proc_mice_pos_data is as follows:
 % proc_mice_pos_data.ri.posdata_reconstructed is the reconstructed data for the resident mouse
 % proc_mice_pos_data.fp.posdata_reconstructed is the reconstructed data for the fiber mouse
