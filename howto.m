@@ -26,7 +26,7 @@ params = setparams(default_model_params);
 disp(params.autoenc.model_params)
 %% checking if stuff exists and if not, running it.
 if ~exist('testDir', 'dir')
-    project = Project('testDir', 'testDir', params); %this creates a project object which holds the data directory and the parameters and loads the python module
+    project = Project('testDir', params); %this creates a project object which holds the data directory and the parameters and loads the python module
 else
     project = Project.loadProject('testDir/testDir_project.mat'); %this loads the project object from the directory given
 end 
@@ -164,3 +164,5 @@ title('Wavelet Transform for Angle Feature 2')
 TrainInitEmbedding(project)
 %%
 TrainMLP(project)
+%%
+Embedalldata(project)
