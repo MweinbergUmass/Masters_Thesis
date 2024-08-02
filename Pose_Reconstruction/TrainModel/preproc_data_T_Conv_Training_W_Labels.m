@@ -1,6 +1,6 @@
 function preproc_data_T_Conv_Training_W_Labels(project)
    
-    sequence_length = project.parameters.autoenc.model_params.sequence_length;
+    sequence_length = project.parameters.autoenc.model_parameters.sequence_length;
 
     selected_files_preds = project.parameters.selected_files_preds;
     selected_files_labels = project.parameters.selected_files_labels;
