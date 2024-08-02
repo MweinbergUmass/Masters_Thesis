@@ -3,7 +3,12 @@ function setuppyenv(envName,yamlFile)
         envName = 'MotmautoEnv';
     end
     if nargin < 2
-        yamlFile = 'environment.yml';
+        % we need to check the os to see if we should use the mac or windows yaml file
+        if ispc
+            yamlFile = 'environment_windows.yml';
+        else
+            yamlFile = 'environment_mac.yml';
+        end
     end
 
     % Check if the YAML file exists
