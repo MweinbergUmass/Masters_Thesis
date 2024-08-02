@@ -8,23 +8,6 @@
 - **`commit`**: This actually saves your changes to your repository (your local one).
 - **`push`**: This is a command used to upload local repository content to a remote repository. It transfers commits from your local repository to a remote repo.
 
-## Workflow Diagram
-
-```mermaid
-graph TD
-    A[Start] --> B[Checkout main branch]
-    B --> C[Pull latest changes]
-    C --> D[Create new feature branch]
-    D --> E[Make changes]
-    E --> F[Stage changes]
-    F --> G[Commit changes]
-    G --> H[Push to remote]
-    H --> I[Create pull request]
-    I --> J[Review and merge]
-    J --> K[Update local main]
-    K --> L[Delete feature branch]
-    L --> M[End]
-```
 
 ## Detailed Workflow
 
@@ -86,6 +69,25 @@ git branch -d feature-name
 # Delete remote feature branch
 git push origin --delete feature-name
 ```
+
+## Workflow Diagram
+
+```mermaid
+graph TD
+    A[Start] --> B[Checkout main branch]
+    B --> C[Pull latest changes]
+    C --> D[Create new feature branch]
+    D --> E[Make changes]
+    E --> F[Stage changes]
+    F --> G[Commit changes]
+    G --> H[Push to remote]
+    H --> I[Create pull request]
+    I --> J[Review and merge]
+    J --> K[Update local main]
+    K --> L[Delete feature branch]
+    L --> M[End]
+```
+
 # Keeping Your Branch Up to Date
 
 It's crucial to keep your feature branch up to date with the main branch to avoid conflicts and ensure you're working with the latest code. Here's how to do it safely:
