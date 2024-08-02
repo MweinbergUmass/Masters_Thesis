@@ -1,6 +1,36 @@
-function SegmentAllData(Y_embedded, project)
+function SegmentAllData(project)
+    % SegmentAllData Perform watershed segmentation on all embedded data
+    proc_mice_files = project.returnDefaultReconstructionFiles();
+    % grab the zvals from each
+    Y_embedded = [];
+    for i = 1:length(proc_mice_files)
+        ProcessingStatus = project.getProcessingStatus(proc_mice_files{i});
+        if ~ProcessingStatus.sleap_extracted
+            warning('Data not sleap_extracted for %s. Skipping.', proc_mice_files{i});
+            continue;
+        end
+        if ~ProcessingStatus.autoencoder_completed
+            warning('Data not autoencoder_completed for %s. Skipping.', proc_mice_files{i});
+            continue;
+        end
+        if ~ProcessingStatus.features_extracted
+            warning('Data not features_extracted for %s. Skipping.', proc_mice_files{i});
+            continue;
+        end
+        if ~ProcessingStatus.wavelets_completed
+            warning('Data not wavelets_completed for %s. Skipping.', proc_mice_files{i});
+            continue;
+        end
+        if ~ProcessingStatus.embedded
+            warning('Data not embedded for %s. Skipping.', proc_mice_files{i});
+            continue;
+        end
+        proc_mice_pos_data = load(proc_mice_files{i}).processedData;
+        zvals = proc_mice_pos_data.Motmap.Zvals;
+        Y_embedded = [Y_embedded; zvals];
+    end
+
     
-    % SEGMENT Perform watershed segmentation on a 2D embedding
     parameters = project.parameters.segmentation;
     sigma = parameters.sigma;
     n_bins = parameters.n_bins;
@@ -71,7 +101,7 @@ function SegmentAllData(Y_embedded, project)
     segmentation_data.xx = xx;
     segmentation_data.yy = yy;
     segmentation_data.maxVal = maxVal;
-    
+
     save(fullfile(outdir, 'segmentation_data.mat'), 'segmentation_data');
 
 end
