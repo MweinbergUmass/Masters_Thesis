@@ -161,7 +161,8 @@ classdef Project < handle
                     'autoencoder_completed', false, ...
                     'features_extracted', false, ...
                     'wavelets_completed', false,...
-                    'embedded', false ...
+                    'embedded', false, ...
+                    'segmented', false ...
                 );
                 obj.fileRegistry(end+1) = newEntry;
             else
@@ -492,8 +493,19 @@ classdef Project < handle
             obj.log{end+1} = sprintf('%s: Set current model to: %s', datetime('now'), 'default model');
             obj.saveProject();
         end 
-
-
+        function addDefaultMLPModel(obj, defaultmodelpath)
+            if nargin < 2 || ~exist("defaultmodelpath","var")
+                defaultmodelpath = fullfile(pwd, 'Embedding','Models', 'unif_MLP.joblib');
+            end 
+            source = defaultmodelpath;
+            destination = fullfile(obj.modelsDir, ['unif_MLP', '.joblib']);
+            copyfile(source,destination)
+            obj.parameters.embedding.default_model_path = destination;
+            obj.log{end+1} = sprintf('%s: Set current model to: %s', datetime('now'), 'default model');
+            obj.saveProject();
+            
+        end 
+        
         function setCurrentModel(obj, modelName)
             % Set the current model to use for predictions
             

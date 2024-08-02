@@ -13,10 +13,10 @@ function Embedoos(proc_mice_pos_data_file, project)
     project.load_TSNE_MLP();
     
     % now we need to embed the data
-    proc_mice_pos_data.Motmap.Zvals = project.module.Embed(features_all,project.parameters.embedding.mlp.metadata.model_path);
+    proc_mice_pos_data.Motmap.Zvals = double(project.module.Embed(features_all,project.parameters.embedding.mlp.metadata.model_path));
     proc_mice_pos_data.Motmap.mlp_path = project.parameters.embedding.mlp.metadata.model_path;
     % updateProcessingStatus(obj, filePath, statusType, value, processedData)
-    project.updateProcessingStatus(proc_mice_pos_data_file, 'embedding', 1, proc_mice_pos_data);
+    project.updateProcessingStatus(proc_mice_pos_data_file, 'embedded', 1, proc_mice_pos_data);
     project.saveProject();
     
     
