@@ -76,7 +76,7 @@ parameters.embedding.mlp.model_name = 'model.joblib';
 parameters.embedding.mlp.default.use_default = true;
 parameters.embedding.mlp.default.model_path = fullfile('Data','Default_MLP', 'unif_MLP.joblib');
 parameters.embedding.mlp.default.ReEmbedInfoPath = fullfile('Data','Default_MLP', 'ReEmbedInfo.mat');
-parameters.embedding.mlp.default.EmbedoosinfoPath = fullfile('Data','Default_MLP', 'Embedoosinfo.mat');
+parameters.embedding.mlp.default.EmbedoosinfoPath = fullfile('Data','Default_MLP', 'converted_model.json');
 
 
 % add parametersfor segmentation
