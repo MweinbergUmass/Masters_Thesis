@@ -58,12 +58,12 @@ function [proc_mice_pos_data] = Embedoos_default(proc_mice_pos_data_path, projec
     [Heatmap,fig] = EmbedExperiment(Y_embedded,XBinLimits,YBinLimits,maxVal,XEDGES, YEDGES, boundaries, ['New Experiment']);
     region_inds = return_region_inds(Y_embedded,XEDGES,YEDGES, L);
     
-    proc_mice_pos_data.MotMap.Zvals = Y_embedded;
-    proc_mice_pos_data.MotMap.region_inds = region_inds;
-    proc_mice_pos_data.MotMap.L = L;
-    proc_mice_pos_data.MotMap.boundaries = boundaries;
-    proc_mice_pos_data.MotMap.Heatmap = Heatmap;
-    proc_mice_pos_data.MotMap.WatershedFig = fig;
+    proc_mice_pos_data.Motmap_default.Zvals = Y_embedded;
+    proc_mice_pos_data.Motmap_default.region_inds = region_inds;
+    proc_mice_pos_data.Motmap_default.L = L;
+    proc_mice_pos_data.Motmap_default.boundaries = boundaries;
+    proc_mice_pos_data.Motmap_default.Heatmap = Heatmap;
+    proc_mice_pos_data.Motmap_default.WatershedFig = fig;
     
     project.updateProcessingStatus(proc_mice_pos_data_path, 'embedded', 1, proc_mice_pos_data);
     project.saveProject();
