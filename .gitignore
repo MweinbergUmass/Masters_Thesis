@@ -1,6 +1,7 @@
 .DS_Store
 .Mat
 .pyc
+.cursorignore
 *.asv
 testDir/
 Projects/
