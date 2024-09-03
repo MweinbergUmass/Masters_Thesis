@@ -1,58 +1,85 @@
-All the code for my master's thesis exists here. The presentation and videos for each of the different behaviors have also been uploaded.
+# Masters Thesis Project
 
-Everything is organized around a project class and a parameter dictionary.
+## About
 
-The project class handles all the data and model tracking for individual use cases. The parameter dictionary is coupled with the project class to implement all the different parameter changes for the models one wants. All this will be updated as the project continues. 
+This repository contains all the code and data for a Master's Thesis project focused on pose reconstruction and behavioral analysis using machine learning techniques.
+
+## Project Structure
+
+The project is organized around a central `Project` class that handles data management and model tracking for individual use cases. It's coupled with a parameter dictionary to implement various parameter changes for the models.
+
+### Key Components:
+
+1. **Pose Reconstruction**: Autoencoder-based reconstruction of animal poses.
+2. **Feature Extraction**: Computation of geometric and wavelet-based features from pose data.
+3. **Embedding**: Training of embeddings using t-SNE and MLP for dimensionality reduction and visualization.
+4. **Data Processing**: Handling of SLEAP output files and preprocessing steps.
+
+## Setup
+
+1. Clone the repository:
+   ```
+   git clone https://github.com/MweinbergUmass/Masters_Thesis.git
+   ```
+
+2. Set up the Python environment:
+   - For Mac: Use `environment_mac.yml`
+   - For Windows: Use `environment_win.yml`
+
+   ```
+   conda env create -f environment_[mac/win].yml
+   ```
+
+3. Activate the environment:
+   ```
+   conda activate [environment_name]
+   ```
+
+## Usage
+
+The main workflow is implemented through the `Project` class. Here's a basic usage example:
+matlab
+% Create a new project
+project = Project.create('MyProject');
+% Prepare training data
+project.prepareTrainingData_PR('path/to/data');
+% Train autoencoder
+project.trainAuto('my_model');
+% Compute features and embeddings
+ComputeAllFeatures(project);
+ComputeAllWavelets(project);
+TrainInitEmbedding(project);
+% Set and use MLP model
+project.setMLPModel();
 
 
-Currently working is:
--Autoencoder Reconstruction
--Autoencoder Preprocessing
--Autoencoder Training
+For more detailed usage, refer to the `howto.m` or `howto.mlx` files in the repository.
 
-Next steps are:
--Feature Extraction (Somehow couple this with an excel sheet?)
-	-Parameter changes (filtering, etc...)
+## Key Files
 
-**
-Currently working on this. It should work by having some modular function which just computes features.
+- `util/Project.m`: Core class for project management.
+- `Pose_Reconstruction/`: Contains autoencoder models and reconstruction code.
+- `Embedding/`: Includes code for feature extraction, t-SNE, and MLP training.
+- `Data/`: Stores processed data and default models.
 
--Train Embedding
-	-Compute features for all datasets (done)
-	-Persistent variable for tracking minmaxdata (done (changed to just saving it in the parameters))
-(I'm imagining a func which looks something like train_embedding(project), which computes all the nescessary features)
-train_embedding(project) 
-	-Compute all features 
-		-Find all proc_mice file, load it, for each:
-			-compute features
-			-update minmaxdata
-			-update length cell array which is somehow coupled to the proc_mice_file (maybe use file registry for this?) (Done, used file registry for this)
-			-save the data
+## Dependencies
 
-			
-			**
-			Working Here!
-		-Training subsampling procedure such that I grab only certain subsets of files
-		-Normalize using minmaxdata
-		-Compute Distance Matrix
-		-Run tsne
-		-Train Test Split
-		-Train MLP to reembed
-	mkdir in data folder for the project called Embeddingdata
-	Embeddingdata
-		-minmaxdata
-		-MLP
-		-Distance Matrix
-		-Train Test Split
-		-Features for Distance Matrix
-return 0
+This project uses both MATLAB and Python. Key dependencies include:
 
-**
+- MATLAB (with Signal Processing Toolbox)
+- Python 3.9+
+- TensorFlow
+- scikit-learn
+- h5py
 
--Embedding (Decision between autoencoder, tsne, or umap would be nice, for now we can just go with tsne)
--Pick a reembeding method (everything will be defaulted to what I used for my masters thesis)
--Embed all sleap files and make movies
- -Movie handling will be a big undertaking. How do we want to handle tracking the corresponding mp4's... Currently we are relying on the mp4 output filenames for tracking, that should continue to work. 
--Integration with fiber photometry
--Plotting functionality
--TACI integration
+For a complete list of Python dependencies, refer to the `requirements.txt` file.
+
+## Contributing
+
+Contributions to this project are welcome. Please ensure to follow the existing code style and add unit tests for any new features.
+
+## Contact
+
+For any queries regarding this project, please contact:
+Max Weinberg - mweinberg@umass.edu
+
